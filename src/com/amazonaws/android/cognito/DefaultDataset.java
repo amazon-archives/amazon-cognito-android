@@ -115,7 +115,7 @@ class DefaultDataset implements Dataset {
                 List<String> mergedDatasets = getLocalMergedDatasets();
                 if (!mergedDatasets.isEmpty()) {
                     Log.i(TAG, "defected merge datasets " + datasetName);
-                    callback.onMerge(DefaultDataset.this, mergedDatasets);
+                    callback.onDatasetsMerged(DefaultDataset.this, mergedDatasets);
                 }
 
                 boolean result = synchronizeInternal(callback, MAX_RETRY);
@@ -167,7 +167,7 @@ class DefaultDataset implements Dataset {
         }
 
         if (!datasetUpdates.getMergedDatasetNameList().isEmpty()) {
-            boolean resume = callback.onMerge(DefaultDataset.this,
+            boolean resume = callback.onDatasetsMerged(DefaultDataset.this,
                     new ArrayList<String>(datasetUpdates.getMergedDatasetNameList()));
             if (resume) {
                 return synchronizeInternal(callback, --retry);
@@ -181,7 +181,7 @@ class DefaultDataset implements Dataset {
         if (lastSyncCount != 0 && !datasetUpdates.isExists()
                 || datasetUpdates.isDeleted()) {
             boolean resume = callback
-                    .onDelete(DefaultDataset.this, datasetUpdates.getDatasetName());
+                    .onDatasetDeleted(DefaultDataset.this, datasetUpdates.getDatasetName());
             if (resume) {
                 // remove both records and metadata
                 local.deleteDataset(getIdentityId(), datasetName);

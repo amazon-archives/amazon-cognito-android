@@ -212,7 +212,7 @@ public interface Dataset {
          * @param datasetName the name of the dataset that is deleted remotely
          * @return true to remove local dataset, or false to keep it
          */
-        boolean onDelete(Dataset dataset, String datasetName);
+        boolean onDatasetDeleted(Dataset dataset, String datasetName);
 
         /**
          * If two or more datasets are merged as a result of identity merge,
@@ -226,7 +226,7 @@ public interface Dataset {
          * @param datasetNames a list of names of merged datasets'
          * @return
          */
-        boolean onMerge(Dataset dataset, List<String> datasetNames);
+        boolean onDatasetsMerged(Dataset dataset, List<String> datasetNames);
 
         /**
          * This is called when an exception occurs during sync.

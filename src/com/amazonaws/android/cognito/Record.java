@@ -95,7 +95,7 @@ public final class Record {
      * 
      * @return the server timestamp when it was last modified.
      */
-    public Date getLasteModifiedDate() {
+    public Date getLastModifiedDate() {
         return new Date(lastModifiedDate.getTime());
     }
 

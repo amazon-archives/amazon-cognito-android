@@ -5,6 +5,9 @@ import com.amazonaws.android.cognito.Record;
 
 import java.util.regex.Pattern;
 
+/**
+ * A utility class for datasets objects.
+ */
 public final class DatasetUtils {
 
     /**

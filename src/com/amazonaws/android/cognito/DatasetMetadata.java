@@ -175,6 +175,7 @@ public final class DatasetMetadata {
          * @return builder itself
          */
         public Builder lastModifiedBy(String lastModifiedBy) {
+            this.lastModifiedBy = lastModifiedBy;
             return this;
         }
 
@@ -188,6 +189,7 @@ public final class DatasetMetadata {
             if (storageSizeBytes < 0) {
                 throw new IllegalArgumentException("Storage size can't be negative");
             }
+            this.storageSizeBytes = storageSizeBytes;
             return this;
         }
 
@@ -201,6 +203,7 @@ public final class DatasetMetadata {
             if (recordCount < 0) {
                 throw new IllegalArgumentException("Number of records can't be negative");
             }
+            this.recordCount = recordCount;
             return this;
         }
 

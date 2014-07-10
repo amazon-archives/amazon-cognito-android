@@ -31,6 +31,12 @@ import com.amazonaws.services.securitytoken.AWSSecurityTokenService;
 import java.util.Calendar;
 import java.util.Map;
 
+/**
+ * This credentials provider is intended for Android application. It offers the
+ * ability to persist the Cognito identity id in {@link SharedPreferences}.
+ * Furthermore, it caches session credentials so as to reduce the number of
+ * network requests.
+ */
 public class CognitoCredentialsProvider extends
         com.amazonaws.auth.CognitoCredentialsProvider implements
         com.amazonaws.auth.CognitoCredentialsProvider.IdentityChangedListener {
@@ -53,7 +59,7 @@ public class CognitoCredentialsProvider extends
     private SharedPreferences sharedPreferences = null;
 
     /**
-     * Constructs a new AndroidCognitoCredentialsProvider, which will use the
+     * Constructs a new {@link CognitoCredentialsProvider}, which will use the
      * specified Amazon Cognito identity pool to make a request to the AWS
      * Security Token Service (STS) to request short lived session credentials,
      * which will then be returned by this class's {@link #getCredentials()}
@@ -71,14 +77,14 @@ public class CognitoCredentialsProvider extends
             String accountId, String identityPoolId, String unauthRoleArn, String authRoleArn) {
         this(context, accountId, identityPoolId, unauthRoleArn, authRoleArn,
                 new ClientConfiguration() {
-            {
-                setUserAgent(USER_AGENT);
-            }
-        });
+                    {
+                        setUserAgent(USER_AGENT);
+                    }
+                });
     }
 
     /**
-     * Constructs a new AndroidCognitoCredentialsProvider, which will use the
+     * Constructs a new {@link CognitoCredentialsProvider}, which will use the
      * specified Amazon Cognito identity pool to make a request to the AWS
      * Security Token Service (STS) to request short lived session credentials,
      * which will then be returned by this class's {@link #getCredentials()}
@@ -106,8 +112,8 @@ public class CognitoCredentialsProvider extends
     }
 
     /**
-     * Constructs a new AndroidAmazonCognitoCredentialsProvider, which will use
-     * the specified Amazon Cognito identity pool to make a request to the AWS
+     * Constructs a new {@link CognitoCredentialsProvider}, which will use the
+     * specified Amazon Cognito identity pool to make a request to the AWS
      * Security Token Service (STS) to request short lived session credentials,
      * which will then be returned by this class's {@link #getCredentials()}
      * method.
@@ -164,7 +170,9 @@ public class CognitoCredentialsProvider extends
     synchronized public AWSSessionCredentials getCredentials() throws NotAuthorizedException {
         if (sessionCredentials == null) {
             loadCredentials();
-        } else {
+        }
+        // return only if the credentials are valid
+        if (!needsNewSession()) {
             return sessionCredentials;
         }
 
