@@ -27,6 +27,7 @@ import com.amazonaws.auth.BasicSessionCredentials;
 import com.amazonaws.services.cognitoidentity.AmazonCognitoIdentityService;
 import com.amazonaws.services.cognitoidentity.model.NotAuthorizedException;
 import com.amazonaws.services.securitytoken.AWSSecurityTokenService;
+import com.amazonaws.util.VersionInfoUtils;
 
 import java.util.Calendar;
 import java.util.Map;
@@ -48,7 +49,8 @@ public class CognitoCredentialsProvider extends
     /**
      * User agent string appended to cib and sts
      */
-    private static final String USER_AGENT = "CognitoCredentialsProvider";
+    private static final String USER_AGENT = CognitoCredentialsProvider.class.getName()
+            + "/" + VersionInfoUtils.getVersion();
 
     private static final String ID_KEY = "identityId";
     private static final String AK_KEY = "accessKey";
@@ -76,11 +78,7 @@ public class CognitoCredentialsProvider extends
     public CognitoCredentialsProvider(Context context,
             String accountId, String identityPoolId, String unauthRoleArn, String authRoleArn) {
         this(context, accountId, identityPoolId, unauthRoleArn, authRoleArn,
-                new ClientConfiguration() {
-                    {
-                        setUserAgent(USER_AGENT);
-                    }
-                });
+                new ClientConfiguration());
     }
 
     /**
@@ -271,5 +269,10 @@ public class CognitoCredentialsProvider extends
      */
     public String getCachedIdentityId() {
         return sharedPreferences.getString(ID_KEY, null);
+    }
+
+    @Override
+    protected String getUserAgent() {
+        return USER_AGENT;
     }
 }

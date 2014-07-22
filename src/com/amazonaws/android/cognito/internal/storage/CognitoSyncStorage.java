@@ -18,7 +18,7 @@
 package com.amazonaws.android.cognito.internal.storage;
 
 import com.amazonaws.AmazonClientException;
-import com.amazonaws.ClientConfiguration;
+import com.amazonaws.AmazonWebServiceRequest;
 import com.amazonaws.android.cognito.DatasetMetadata;
 import com.amazonaws.android.cognito.Record;
 import com.amazonaws.android.cognito.exceptions.DataConflictException;
@@ -53,8 +53,6 @@ import java.util.List;
  */
 public class CognitoSyncStorage implements RemoteDataStorage {
 
-    private static final String USER_AGENT = "CognitoSyncClient";
-
     /**
      * Identity pool id
      */
@@ -62,12 +60,16 @@ public class CognitoSyncStorage implements RemoteDataStorage {
     private final AmazonCognitoSyncServiceClient client;
     private final CognitoCredentialsProvider provider;
 
+    /**
+     * User agent string to append to all requests
+     */
+    private String userAgent;
+
     public CognitoSyncStorage(String identityPoolId, CognitoCredentialsProvider provider) {
         this.identityPoolId = identityPoolId;
         this.provider = provider;
-        ClientConfiguration config = new ClientConfiguration();
-        config.setUserAgent(USER_AGENT);
-        client = new AmazonCognitoSyncServiceClient(provider, config);
+        client = new AmazonCognitoSyncServiceClient(provider);
+        userAgent = "";
     }
 
     /*
@@ -81,6 +83,7 @@ public class CognitoSyncStorage implements RemoteDataStorage {
         String nextToken = null;
         do {
             ListDatasetsRequest request = new ListDatasetsRequest();
+            appendUserAgent(request, userAgent);
             request.setIdentityPoolId(identityPoolId);
             request.setIdentityId(getIdentityId());
             // a large enough number to reduce # of requests
@@ -110,6 +113,7 @@ public class CognitoSyncStorage implements RemoteDataStorage {
         String nextToken = null;
         do {
             ListRecordsRequest request = new ListRecordsRequest();
+            appendUserAgent(request, userAgent);
             request.setIdentityPoolId(identityPoolId);
             request.setIdentityId(getIdentityId());
             request.setDatasetName(datasetName);
@@ -148,6 +152,7 @@ public class CognitoSyncStorage implements RemoteDataStorage {
     @Override
     public List<Record> putRecords(String datasetName, List<Record> records, String syncSessionToken) {
         UpdateRecordsRequest request = new UpdateRecordsRequest();
+        appendUserAgent(request, userAgent);
         request.setDatasetName(datasetName);
         request.setIdentityPoolId(identityPoolId);
         request.setIdentityId(getIdentityId());
@@ -176,6 +181,7 @@ public class CognitoSyncStorage implements RemoteDataStorage {
     @Override
     public void deleteDataset(String datasetName) {
         DeleteDatasetRequest request = new DeleteDatasetRequest();
+        appendUserAgent(request, userAgent);
         request.setIdentityPoolId(identityPoolId);
         request.setIdentityId(getIdentityId());
         request.setDatasetName(datasetName);
@@ -225,6 +231,7 @@ public class CognitoSyncStorage implements RemoteDataStorage {
     @Override
     public DatasetMetadata getDatasetMetadata(String datasetName) throws DataStorageException {
         DescribeDatasetRequest request = new DescribeDatasetRequest();
+        appendUserAgent(request, userAgent);
         request.setIdentityPoolId(identityPoolId);
         request.setIdentityId(getIdentityId());
         request.setDatasetName(datasetName);
@@ -275,6 +282,26 @@ public class CognitoSyncStorage implements RemoteDataStorage {
      */
     boolean isNetworkException(AmazonClientException ace) {
         return ace.getCause() instanceof IOException;
+    }
+
+    /**
+     * Sets the user agent string to append to all requests made by this client.
+     * 
+     * @param userAgent user agent string to append
+     */
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
+    /**
+     * Append user agent string to the request. The final string is what is set
+     * in the ClientCofniguration concatenated with the given userAgent string.
+     * 
+     * @param request the request object to be appended
+     * @param userAgent additional user agent string to append
+     */
+    void appendUserAgent(AmazonWebServiceRequest request, String userAgent) {
+        request.getRequestClientOptions().appendUserAgent(userAgent);
     }
 
     private DatasetMetadata modelToDatasetMetadata(

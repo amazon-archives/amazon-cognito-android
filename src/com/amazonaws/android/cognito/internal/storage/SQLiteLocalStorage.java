@@ -417,14 +417,8 @@ public class SQLiteLocalStorage implements LocalStorage {
         SQLiteDatabase db = helper.getWritableDatabase();
         db.beginTransaction();
         try {
-            long lastSyncCount = 0;
             for (Record record : records) {
-                lastSyncCount = Math.max(lastSyncCount, record.getSyncCount());
-                if (record.getValue() == null) {
-                    removeRecord(db, identityId, datasetName, record);
-                } else {
-                    updateAndClearRecord(db, identityId, datasetName, record);
-                }
+                updateAndClearRecord(db, identityId, datasetName, record);
             }
 
             db.setTransactionSuccessful();

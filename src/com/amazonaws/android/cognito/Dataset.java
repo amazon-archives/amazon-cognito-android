@@ -60,6 +60,20 @@ public interface Dataset {
     void synchronize(SyncCallback callback);
 
     /**
+     * Attempt to synchronize {@link Dataset} when connectivity is available. If
+     * the connectivity is available right away, it behaves the same as
+     * {@link #synchronize(SyncCallback)}. Otherwise it listens to connectivity
+     * changes, and will do a sync once the connectivity is back. Note that if
+     * this method is called multiple times, only the last synchronize request
+     * is kept and only the last callback will fire. If either the dataset or
+     * the callback is garbage collected, this method will not perform a sync
+     * and the callback won't fire.
+     * 
+     * @param callback call back
+     */
+    void synchronizeOnConnectivity(SyncCallback callback);
+
+    /**
      * Gets the value of a {@link Record} with the given key. If the
      * {@link Record} doesn't exist or is marked deleted, null will be returned.
      * 

@@ -26,6 +26,7 @@ import com.amazonaws.android.cognito.internal.storage.CognitoSyncStorage;
 import com.amazonaws.android.cognito.internal.storage.SQLiteLocalStorage;
 import com.amazonaws.android.cognito.internal.util.DatasetUtils;
 import com.amazonaws.android.cognito.internal.util.StringUtils;
+import com.amazonaws.util.VersionInfoUtils;
 
 import java.util.List;
 
@@ -51,10 +52,17 @@ public class DefaultCognitoSyncClient implements CognitoSyncClient,
     private static final String TAG = "DefaultCognitoClient";
 
     /**
+     * User agent string to append to all requests to the remote service
+     */
+    private static final String USER_AGENT = DefaultCognitoSyncClient.class.getName()
+            + "/" + VersionInfoUtils.getVersion();
+
+    /**
      * Default database name.
      */
     private static final String DATABASE_NAME = "cognito_dataset_cache.db";
 
+    private final Context context;
     private final SQLiteLocalStorage local;
     private final CognitoSyncStorage remote;
     private final CognitoCredentialsProvider provider;
@@ -68,12 +76,17 @@ public class DefaultCognitoSyncClient implements CognitoSyncClient,
      */
     public DefaultCognitoSyncClient(Context context, String identityPoolId,
             CognitoCredentialsProvider provider) {
+        if (context == null) {
+            throw new IllegalArgumentException("context can't be null");
+        }
         if (StringUtils.isEmpty(identityPoolId)) {
             throw new IllegalArgumentException("invalid identity pool id");
         }
+        this.context = context;
         this.provider = provider;
         local = new SQLiteLocalStorage(context, DATABASE_NAME);
         remote = new CognitoSyncStorage(identityPoolId, provider);
+        remote.setUserAgent(USER_AGENT);
         provider.registerIdentityChangedListener(this);
     }
 
@@ -81,7 +94,7 @@ public class DefaultCognitoSyncClient implements CognitoSyncClient,
     public DefaultDataset openOrCreateDataset(String datasetName) {
         DatasetUtils.validateDatasetName(datasetName);
         local.createDataset(getIdentityId(), datasetName);
-        return new DefaultDataset(datasetName, provider, local, remote);
+        return new DefaultDataset(context, datasetName, provider, local, remote);
     }
 
     @Override
