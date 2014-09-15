@@ -15,19 +15,28 @@
  * limitations under the License.
  */
 
-package com.amazonaws.android.cognito.internal.storage;
+package com.amazonaws.mobileconnectors.cognito.internal.storage;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonWebServiceRequest;
-import com.amazonaws.android.cognito.DatasetMetadata;
-import com.amazonaws.android.cognito.Record;
-import com.amazonaws.android.cognito.exceptions.DataConflictException;
-import com.amazonaws.android.cognito.exceptions.DataLimitExceededException;
-import com.amazonaws.android.cognito.exceptions.DataStorageException;
-import com.amazonaws.android.cognito.exceptions.DatasetNotFoundException;
-import com.amazonaws.android.cognito.exceptions.NetworkException;
-import com.amazonaws.auth.CognitoCredentialsProvider;
-import com.amazonaws.services.cognitosync.AmazonCognitoSyncServiceClient;
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.cognito.DatasetMetadata;
+import com.amazonaws.mobileconnectors.cognito.Record;
+import com.amazonaws.mobileconnectors.cognito.exceptions.DataAccessNotAuthorizedException;
+import com.amazonaws.mobileconnectors.cognito.exceptions.DataConflictException;
+import com.amazonaws.mobileconnectors.cognito.exceptions.DataLimitExceededException;
+import com.amazonaws.mobileconnectors.cognito.exceptions.DataStorageException;
+import com.amazonaws.mobileconnectors.cognito.exceptions.DatasetNotFoundException;
+import com.amazonaws.mobileconnectors.cognito.exceptions.NetworkException;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.cognitoidentity.model.NotAuthorizedException;
+import com.amazonaws.services.cognitosync.AmazonCognitoSyncClient;
 import com.amazonaws.services.cognitosync.model.DeleteDatasetRequest;
 import com.amazonaws.services.cognitosync.model.DescribeDatasetRequest;
 import com.amazonaws.services.cognitosync.model.DescribeDatasetResult;
@@ -43,11 +52,6 @@ import com.amazonaws.services.cognitosync.model.ResourceNotFoundException;
 import com.amazonaws.services.cognitosync.model.UpdateRecordsRequest;
 import com.amazonaws.services.cognitosync.model.UpdateRecordsResult;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 /**
  * Cognito remote storage powered by AWS Cognito Sync service
  */
@@ -57,18 +61,19 @@ public class CognitoSyncStorage implements RemoteDataStorage {
      * Identity pool id
      */
     private final String identityPoolId;
-    private final AmazonCognitoSyncServiceClient client;
-    private final CognitoCredentialsProvider provider;
+    private final AmazonCognitoSyncClient client;
+    private final CognitoCachingCredentialsProvider provider;
 
     /**
      * User agent string to append to all requests
      */
     private String userAgent;
 
-    public CognitoSyncStorage(String identityPoolId, CognitoCredentialsProvider provider) {
+    public CognitoSyncStorage(String identityPoolId, Regions region, CognitoCachingCredentialsProvider provider) {
         this.identityPoolId = identityPoolId;
         this.provider = provider;
-        client = new AmazonCognitoSyncServiceClient(provider);
+        client = new AmazonCognitoSyncClient(provider);
+        client.setRegion(Region.getRegion(region));
         userAgent = "";
     }
 
@@ -85,13 +90,13 @@ public class CognitoSyncStorage implements RemoteDataStorage {
             ListDatasetsRequest request = new ListDatasetsRequest();
             appendUserAgent(request, userAgent);
             request.setIdentityPoolId(identityPoolId);
-            request.setIdentityId(getIdentityId());
             // a large enough number to reduce # of requests
             request.setMaxResults("64");
             request.setNextToken(nextToken);
 
             ListDatasetsResult result = null;
             try {
+                request.setIdentityId(getIdentityId());
                 result = client.listDatasets(request);
             } catch (AmazonClientException ace) {
                 throw handleException(ace, "Failed to list dataset metadata");
@@ -115,15 +120,14 @@ public class CognitoSyncStorage implements RemoteDataStorage {
             ListRecordsRequest request = new ListRecordsRequest();
             appendUserAgent(request, userAgent);
             request.setIdentityPoolId(identityPoolId);
-            request.setIdentityId(getIdentityId());
             request.setDatasetName(datasetName);
             request.setLastSyncCount(String.valueOf(lastSyncCount));
             // mark it large enough to reduce # of requests
             request.setMaxResults("1024");
             request.setNextToken(nextToken);
-
             ListRecordsResult result = null;
             try {
+                request.setIdentityId(getIdentityId());
                 result = client.listRecords(request);
             } catch (AmazonClientException ace) {
                 throw handleException(ace, "Failed to list records in dataset: " + datasetName);
@@ -155,18 +159,16 @@ public class CognitoSyncStorage implements RemoteDataStorage {
         appendUserAgent(request, userAgent);
         request.setDatasetName(datasetName);
         request.setIdentityPoolId(identityPoolId);
-        request.setIdentityId(getIdentityId());
         request.setSyncSessionToken(syncSessionToken);
-
         // create patches
         List<RecordPatch> patches = new ArrayList<RecordPatch>();
         for (Record record : records) {
             patches.add(recordToPatch(record));
         }
         request.setRecordPatches(patches);
-
         List<Record> updatedRecords = new ArrayList<Record>();
         try {
+            request.setIdentityId(getIdentityId());
             UpdateRecordsResult result = client.updateRecords(request);
             for (com.amazonaws.services.cognitosync.model.Record remoteRecord : result.getRecords()) {
                 updatedRecords.add(modelToRecord(remoteRecord));
@@ -183,10 +185,9 @@ public class CognitoSyncStorage implements RemoteDataStorage {
         DeleteDatasetRequest request = new DeleteDatasetRequest();
         appendUserAgent(request, userAgent);
         request.setIdentityPoolId(identityPoolId);
-        request.setIdentityId(getIdentityId());
         request.setDatasetName(datasetName);
-
         try {
+            request.setIdentityId(getIdentityId());
             client.deleteDataset(request);
         } catch (AmazonClientException ace) {
             throw handleException(ace, "Failed to delete dataset: " + datasetName);
@@ -205,6 +206,9 @@ public class CognitoSyncStorage implements RemoteDataStorage {
         patch.setValue(record.getValue());
         patch.setSyncCount(record.getSyncCount());
         patch.setOp(record.getValue() == null ? Operation.Remove : Operation.Replace);
+        if (record.getDeviceLastModifiedDate() != null) {
+            patch.setDeviceLastModifiedDate(record.getDeviceLastModifiedDate());
+        }
         return patch;
     }
 
@@ -233,15 +237,14 @@ public class CognitoSyncStorage implements RemoteDataStorage {
         DescribeDatasetRequest request = new DescribeDatasetRequest();
         appendUserAgent(request, userAgent);
         request.setIdentityPoolId(identityPoolId);
-        request.setIdentityId(getIdentityId());
-        request.setDatasetName(datasetName);
-
         DatasetMetadata dataset = null;
         try {
+            request.setIdentityId(getIdentityId());
+            request.setDatasetName(datasetName);
             DescribeDatasetResult result = client.describeDataset(request);
             dataset = modelToDatasetMetadata(result.getDataset());
         } catch (AmazonClientException ace) {
-            throw new DataStorageException("Failed to get metadata of dataset: " + datasetName, ace);
+            throw handleException(ace, "Failed to get metadata of dataset: " + datasetName);
         }
         return dataset;
     }
@@ -260,6 +263,8 @@ public class CognitoSyncStorage implements RemoteDataStorage {
             return new DataConflictException(message);
         } else if (ace instanceof LimitExceededException) {
             return new DataLimitExceededException(message);
+        } else if (ace instanceof NotAuthorizedException) {
+            return new DataAccessNotAuthorizedException(message);
         } else if (isNetworkException(ace)) {
             return new NetworkException(message);
         } else {
@@ -267,9 +272,7 @@ public class CognitoSyncStorage implements RemoteDataStorage {
         }
     }
 
-    String getIdentityId() {
-        // identity id may change after provider.refresh()
-        provider.refresh();
+    String getIdentityId() throws AmazonClientException, NotAuthorizedException {
         return provider.getIdentityId();
     }
 

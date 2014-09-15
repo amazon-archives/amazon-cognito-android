@@ -1,7 +1,8 @@
-package com.amazonaws.android.cognito.internal.util;
 
-import com.amazonaws.android.auth.CognitoCredentialsProvider;
-import com.amazonaws.android.cognito.Record;
+package com.amazonaws.mobileconnectors.cognito.internal.util;
+
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.cognito.Record;
 
 import java.util.regex.Pattern;
 
@@ -69,7 +70,7 @@ public final class DatasetUtils {
      * 
      * @return the identity id associated with this dataset
      */
-    public static String getIdentityId(CognitoCredentialsProvider provider) {
+    public static String getIdentityId(CognitoCachingCredentialsProvider provider) {
         return provider.getCachedIdentityId() == null
                 ? UNKNOWN_IDENTITY_ID
                 : provider.getCachedIdentityId();

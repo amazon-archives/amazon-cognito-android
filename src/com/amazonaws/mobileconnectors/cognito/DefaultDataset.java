@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.amazonaws.android.cognito;
+package com.amazonaws.mobileconnectors.cognito;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -25,17 +25,17 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-import com.amazonaws.android.auth.CognitoCredentialsProvider;
-import com.amazonaws.android.cognito.exceptions.DataConflictException;
-import com.amazonaws.android.cognito.exceptions.DataStorageException;
-import com.amazonaws.android.cognito.exceptions.NetworkException;
-import com.amazonaws.android.cognito.internal.storage.CognitoSyncStorage;
-import com.amazonaws.android.cognito.internal.storage.LocalStorage;
-import com.amazonaws.android.cognito.internal.storage.RemoteDataStorage;
-import com.amazonaws.android.cognito.internal.storage.RemoteDataStorage.DatasetUpdates;
-import com.amazonaws.android.cognito.internal.storage.SQLiteLocalStorage;
-import com.amazonaws.android.cognito.internal.util.DatasetUtils;
-import com.amazonaws.android.cognito.internal.util.StringUtils;
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.cognito.exceptions.DataConflictException;
+import com.amazonaws.mobileconnectors.cognito.exceptions.DataStorageException;
+import com.amazonaws.mobileconnectors.cognito.exceptions.NetworkException;
+import com.amazonaws.mobileconnectors.cognito.internal.storage.CognitoSyncStorage;
+import com.amazonaws.mobileconnectors.cognito.internal.storage.LocalStorage;
+import com.amazonaws.mobileconnectors.cognito.internal.storage.RemoteDataStorage;
+import com.amazonaws.mobileconnectors.cognito.internal.storage.SQLiteLocalStorage;
+import com.amazonaws.mobileconnectors.cognito.internal.storage.RemoteDataStorage.DatasetUpdates;
+import com.amazonaws.mobileconnectors.cognito.internal.util.DatasetUtils;
+import com.amazonaws.mobileconnectors.cognito.internal.util.StringUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -77,7 +77,7 @@ class DefaultDataset implements Dataset {
     /**
      * Identity id
      */
-    private final CognitoCredentialsProvider provider;
+    private final CognitoCachingCredentialsProvider provider;
 
     /**
      * Constructs a DefaultDataset object
@@ -88,7 +88,8 @@ class DefaultDataset implements Dataset {
      * @param local an instance of LocalStorage
      * @param remote an instance of RemoteDataStorage
      */
-    public DefaultDataset(Context context, String datasetName, CognitoCredentialsProvider provider,
+    public DefaultDataset(Context context, String datasetName,
+            CognitoCachingCredentialsProvider provider,
             LocalStorage local, RemoteDataStorage remote) {
         this.context = context;
         this.datasetName = datasetName;

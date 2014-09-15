@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-package com.amazonaws.android.cognito;
+package com.amazonaws.mobileconnectors.cognito;
 
-import com.amazonaws.android.cognito.internal.util.StringUtils;
+import com.amazonaws.mobileconnectors.cognito.internal.util.StringUtils;
 
 import java.util.Date;
 

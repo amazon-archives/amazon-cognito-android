@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-package com.amazonaws.android.cognito;
+package com.amazonaws.mobileconnectors.cognito;
 
-import com.amazonaws.android.cognito.exceptions.DataStorageException;
+import com.amazonaws.mobileconnectors.cognito.exceptions.DataStorageException;
 
 import java.util.List;
 import java.util.Map;

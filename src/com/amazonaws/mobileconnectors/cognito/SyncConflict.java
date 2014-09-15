@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.amazonaws.android.cognito;
+package com.amazonaws.mobileconnectors.cognito;
 
 /**
  * This consists of the conflicting record from the remote storage and the local

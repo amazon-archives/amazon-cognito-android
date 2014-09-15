@@ -1,5 +1,5 @@
 
-package com.amazonaws.android.cognito.exceptions;
+package com.amazonaws.mobileconnectors.cognito.exceptions;
 
 /**
  * This exception is thrown when the dataset operation exceeds certain limit,
@@ -10,10 +10,6 @@ public class DataLimitExceededException extends DataStorageException {
 
     private static final long serialVersionUID = 4722137117318719134L;
 
-    public DataLimitExceededException() {
-        super();
-    }
-
     public DataLimitExceededException(String detailMessage, Throwable throwable) {
         super(detailMessage, throwable);
     }
@@ -22,7 +18,4 @@ public class DataLimitExceededException extends DataStorageException {
         super(detailMessage);
     }
 
-    public DataLimitExceededException(Throwable throwable) {
-        super(throwable);
-    }
 }

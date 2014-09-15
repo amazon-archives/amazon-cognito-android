@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.amazonaws.android.cognito;
+package com.amazonaws.mobileconnectors.cognito;
 
 import java.util.Date;
 
@@ -23,7 +23,7 @@ import java.util.Date;
  * The metadata of a {@link Dataset}, including name, server sync count, last
  * modified date. The is the cached information of a dataset. It might not
  * reflect the most up-to-date information stored remotely. Please call
- * {@link CognitoSyncClient#refreshDatasetMetadata()} to pull the latest
+ * {@link CognitoSyncManager#refreshDatasetMetadata()} to pull the latest
  * information.
  */
 public final class DatasetMetadata {

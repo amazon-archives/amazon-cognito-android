@@ -15,30 +15,26 @@
  * limitations under the License.
  */
 
-package com.amazonaws.android.cognito.exceptions;
+package com.amazonaws.mobileconnectors.cognito.exceptions;
+
+import com.amazonaws.AmazonClientException;
 
 /**
- * This exception is thrown when the dataset that is attempted to access does
- * not exist.
+ * This exception is thrown when an error occurs during an data storage
+ * operation.
  */
-public class DatasetNotFoundException extends DataStorageException {
+public class DataStorageException extends AmazonClientException {
 
-    private static final long serialVersionUID = -5043074429464815354L;
+    private static final long serialVersionUID = -6906342391685175623L;
 
-    public DatasetNotFoundException() {
-        super();
-    }
 
-    public DatasetNotFoundException(String detailMessage, Throwable throwable) {
+    public DataStorageException(String detailMessage, Throwable throwable) {
         super(detailMessage, throwable);
     }
 
-    public DatasetNotFoundException(String detailMessage) {
+    public DataStorageException(String detailMessage) {
         super(detailMessage);
     }
 
-    public DatasetNotFoundException(Throwable throwable) {
-        super(throwable);
-    }
 
 }

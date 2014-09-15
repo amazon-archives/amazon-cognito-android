@@ -15,30 +15,21 @@
  * limitations under the License.
  */
 
-package com.amazonaws.android.cognito.exceptions;
+package com.amazonaws.mobileconnectors.cognito.exceptions;
 
 /**
- * This exception is thrown when an error occurs during an data storage
- * operation.
+ * This exception is thrown when an update fails due to conflicting states.
  */
-public class DataStorageException extends RuntimeException {
+public class DataConflictException extends DataStorageException {
 
-    private static final long serialVersionUID = -6906342391685175623L;
+    private static final long serialVersionUID = 4937963535057299466L;
 
-    public DataStorageException() {
-        super();
-    }
-
-    public DataStorageException(String detailMessage, Throwable throwable) {
+    public DataConflictException(String detailMessage, Throwable throwable) {
         super(detailMessage, throwable);
     }
 
-    public DataStorageException(String detailMessage) {
+    public DataConflictException(String detailMessage) {
         super(detailMessage);
-    }
-
-    public DataStorageException(Throwable throwable) {
-        super(throwable);
     }
 
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.amazonaws.android.cognito.internal.storage;
+package com.amazonaws.mobileconnectors.cognito.internal.storage;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -24,11 +24,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.amazonaws.android.cognito.Dataset;
-import com.amazonaws.android.cognito.DatasetMetadata;
-import com.amazonaws.android.cognito.Record;
-import com.amazonaws.android.cognito.exceptions.DataStorageException;
-import com.amazonaws.android.cognito.internal.util.StringUtils;
+import com.amazonaws.mobileconnectors.cognito.Dataset;
+import com.amazonaws.mobileconnectors.cognito.DatasetMetadata;
+import com.amazonaws.mobileconnectors.cognito.Record;
+import com.amazonaws.mobileconnectors.cognito.exceptions.DataStorageException;
+import com.amazonaws.mobileconnectors.cognito.internal.util.DatasetUtils;
+import com.amazonaws.mobileconnectors.cognito.internal.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -119,7 +120,6 @@ public class SQLiteLocalStorage implements LocalStorage {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            Log.i(TAG, "onCreate");
             // create datasets table
             db.execSQL("CREATE TABLE " + TABLE_DATASETS + "("
                     + DatasetColumns.IDENTITY_ID + " TEXT NOT NULL,"
@@ -312,7 +312,11 @@ public class SQLiteLocalStorage implements LocalStorage {
         List<DatasetMetadata> datasets = new ArrayList<DatasetMetadata>();
 
         SQLiteDatabase db = helper.getWritableDatabase();
-        Cursor c = db.query(TABLE_DATASETS, DatasetColumns.ALL, null, null, null, null, null);
+        Cursor c = db.query(TABLE_DATASETS, DatasetColumns.ALL,
+                DatasetColumns.IDENTITY_ID + " = ?",
+                new String[] {
+                    identityId
+                }, null, null, null);
         while (c.moveToNext()) {
             datasets.add(cursorToDatasetMetadata(c));
         }
@@ -359,7 +363,8 @@ public class SQLiteLocalStorage implements LocalStorage {
 
         SQLiteDatabase db = helper.getWritableDatabase();
         Cursor c = db.query(TABLE_RECORDS, RecordColumns.ALL,
-                RecordColumns.IDENTITY_ID + " = ? AND " + RecordColumns.DATASET_NAME + " = ? AND "
+                RecordColumns.IDENTITY_ID + " = ? AND "
+                        + RecordColumns.DATASET_NAME + " = ? AND "
                         + RecordColumns.KEY + " = ?",
                 new String[] {
                         identityId, datasetName, key
@@ -378,7 +383,8 @@ public class SQLiteLocalStorage implements LocalStorage {
 
         SQLiteDatabase db = helper.getWritableDatabase();
         Cursor c = db.query(TABLE_RECORDS, RecordColumns.ALL,
-                RecordColumns.IDENTITY_ID + " = ? AND " + RecordColumns.DATASET_NAME + " = ?",
+                RecordColumns.IDENTITY_ID + " = ? AND "
+                        + RecordColumns.DATASET_NAME + " = ?",
                 new String[] {
                         identityId, datasetName
                 }, null, null, null);
@@ -622,24 +628,103 @@ public class SQLiteLocalStorage implements LocalStorage {
     }
 
     @Override
-    public void changeIdentityId(String oldIdentityId, String newIdentityId) {
+    public synchronized void changeIdentityId(String oldIdentityId, String newIdentityId) {
         SQLiteDatabase db = helper.getWritableDatabase();
         db.beginTransaction();
         try {
-            ContentValues datasetValues = new ContentValues();
-            datasetValues.put(DatasetColumns.IDENTITY_ID, newIdentityId);
-            db.update(TABLE_DATASETS, datasetValues,
-                    DatasetColumns.IDENTITY_ID + " = ?",
-                    new String[] {
-                        oldIdentityId
-                    });
-            ContentValues recordValues = new ContentValues();
-            recordValues.put(RecordColumns.IDENTITY_ID, newIdentityId);
-            db.update(TABLE_RECORDS, recordValues,
-                    RecordColumns.IDENTITY_ID + " = ?",
-                    new String[] {
-                        oldIdentityId
-                    });
+            // if oldIdentityId is unknown, aka the dataset is created prior to
+            // having a cognito id, just reparent datasets from unknown to
+            // newIdentityId
+            if (DatasetUtils.UNKNOWN_IDENTITY_ID.equals(oldIdentityId)) {
+                // datasets table
+                db.execSQL("UPDATE " + TABLE_DATASETS
+                        + " SET "
+                        + DatasetColumns.IDENTITY_ID + " = '" + newIdentityId + "'"
+                        + " WHERE " + DatasetColumns.IDENTITY_ID + " = ?",
+                        new String[] {
+                            oldIdentityId
+                        });
+
+                // records table
+                db.execSQL("UPDATE " + TABLE_RECORDS
+                        + " SET "
+                        + RecordColumns.IDENTITY_ID + " = '" + newIdentityId + "'"
+                        + " WHERE " + RecordColumns.IDENTITY_ID + " = ?",
+                        new String[] {
+                            oldIdentityId
+                        });
+            } else {
+                // 1. copy oldIdentityId/dataset to newIdentityId/dataset
+                // datasets table
+                db.execSQL("INSERT INTO " + TABLE_DATASETS + "("
+                        + DatasetColumns.IDENTITY_ID + ","
+                        + DatasetColumns.DATASET_NAME + ","
+                        + DatasetColumns.CREATION_TIMESTAMP + ","
+                        + DatasetColumns.STORAGE_SIZE_BYTES + ","
+                        + DatasetColumns.RECORD_COUNT
+                        // last sync count is reset to default 0
+                        + ")"
+                        + " SELECT "
+                        + "'" + newIdentityId + "'," // assign new owner
+                        + DatasetColumns.DATASET_NAME + ","
+                        + DatasetColumns.CREATION_TIMESTAMP + ","
+                        + DatasetColumns.STORAGE_SIZE_BYTES + ","
+                        + DatasetColumns.RECORD_COUNT
+                        + " FROM " + TABLE_DATASETS
+                        + " WHERE " + DatasetColumns.IDENTITY_ID + " = ?",
+                        new String[] {
+                            oldIdentityId
+                        });
+                // records table
+                db.execSQL("INSERT INTO " + TABLE_RECORDS + "("
+                        + RecordColumns.IDENTITY_ID + ","
+                        + RecordColumns.DATASET_NAME + ","
+                        + RecordColumns.KEY + ","
+                        + RecordColumns.VALUE + ","
+                        // sync count is resset to default 0
+                        + RecordColumns.LAST_MODIFIED_TIMESTAMP + ","
+                        + RecordColumns.LAST_MODIFIED_BY + ","
+                        + RecordColumns.DEVICE_LAST_MODIFIED_TIMESTAMP
+                        // modified is reset to default 1 (dirty)
+                        + ")"
+                        + " SELECT "
+                        + "'" + newIdentityId + "'," // assign new owner
+                        + RecordColumns.DATASET_NAME + ","
+                        + RecordColumns.KEY + ","
+                        + RecordColumns.VALUE + ","
+                        + RecordColumns.LAST_MODIFIED_TIMESTAMP + ","
+                        + RecordColumns.LAST_MODIFIED_BY + ","
+                        + RecordColumns.DEVICE_LAST_MODIFIED_TIMESTAMP
+                        + " FROM " + TABLE_RECORDS
+                        + " WHERE " + RecordColumns.IDENTITY_ID + " = ?",
+                        new String[] {
+                            oldIdentityId
+                        });
+
+                // 2. rename oldIdentityId/dataset to
+                // newIdentityId/dataset.oldIdentityId
+                // datasets table
+                db.execSQL("UPDATE " + TABLE_DATASETS
+                        + " SET "
+                        + DatasetColumns.IDENTITY_ID + " = '" + newIdentityId + "', "
+                        + DatasetColumns.DATASET_NAME + " = "
+                        + DatasetColumns.DATASET_NAME + " || '." + oldIdentityId + "'"
+                        + " WHERE " + DatasetColumns.IDENTITY_ID + " = ?",
+                        new String[] {
+                            oldIdentityId
+                        });
+
+                // records table
+                db.execSQL("UPDATE " + TABLE_RECORDS
+                        + " SET "
+                        + RecordColumns.IDENTITY_ID + " = '" + newIdentityId + "', "
+                        + RecordColumns.DATASET_NAME + " = "
+                        + RecordColumns.DATASET_NAME + " || '." + oldIdentityId + "'"
+                        + " WHERE " + RecordColumns.IDENTITY_ID + " = ?",
+                        new String[] {
+                            oldIdentityId
+                        });
+            }
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();

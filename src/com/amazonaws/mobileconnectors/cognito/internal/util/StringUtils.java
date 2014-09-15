@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.amazonaws.android.cognito.internal.util;
+package com.amazonaws.mobileconnectors.cognito.internal.util;
 
 import java.nio.charset.Charset;
 

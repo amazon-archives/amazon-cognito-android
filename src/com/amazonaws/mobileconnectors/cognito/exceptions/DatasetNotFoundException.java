@@ -15,29 +15,22 @@
  * limitations under the License.
  */
 
-package com.amazonaws.android.cognito.exceptions;
+package com.amazonaws.mobileconnectors.cognito.exceptions;
 
 /**
- * This exception is thrown when an update fails due to conflicting states.
+ * This exception is thrown when the dataset that is attempted to access does
+ * not exist.
  */
-public class DataConflictException extends DataStorageException {
+public class DatasetNotFoundException extends DataStorageException {
 
-    private static final long serialVersionUID = 4937963535057299466L;
+    private static final long serialVersionUID = -5043074429464815354L;
 
-    public DataConflictException() {
-        super();
-    }
-
-    public DataConflictException(String detailMessage, Throwable throwable) {
+    public DatasetNotFoundException(String detailMessage, Throwable throwable) {
         super(detailMessage, throwable);
     }
 
-    public DataConflictException(String detailMessage) {
+    public DatasetNotFoundException(String detailMessage) {
         super(detailMessage);
-    }
-
-    public DataConflictException(Throwable throwable) {
-        super(throwable);
     }
 
 }

@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-package com.amazonaws.android.cognito.internal.storage;
+package com.amazonaws.mobileconnectors.cognito.internal.storage;
 
-import com.amazonaws.android.cognito.Dataset;
-import com.amazonaws.android.cognito.DatasetMetadata;
-import com.amazonaws.android.cognito.Record;
-import com.amazonaws.android.cognito.exceptions.DataConflictException;
-import com.amazonaws.android.cognito.exceptions.DataStorageException;
-import com.amazonaws.android.cognito.exceptions.DatasetNotFoundException;
+import com.amazonaws.mobileconnectors.cognito.Dataset;
+import com.amazonaws.mobileconnectors.cognito.DatasetMetadata;
+import com.amazonaws.mobileconnectors.cognito.Record;
+import com.amazonaws.mobileconnectors.cognito.exceptions.DataConflictException;
+import com.amazonaws.mobileconnectors.cognito.exceptions.DataStorageException;
+import com.amazonaws.mobileconnectors.cognito.exceptions.DatasetNotFoundException;
 
 import java.util.List;
 
