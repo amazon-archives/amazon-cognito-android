@@ -32,8 +32,8 @@ import com.amazonaws.mobileconnectors.cognito.exceptions.NetworkException;
 import com.amazonaws.mobileconnectors.cognito.internal.storage.CognitoSyncStorage;
 import com.amazonaws.mobileconnectors.cognito.internal.storage.LocalStorage;
 import com.amazonaws.mobileconnectors.cognito.internal.storage.RemoteDataStorage;
-import com.amazonaws.mobileconnectors.cognito.internal.storage.SQLiteLocalStorage;
 import com.amazonaws.mobileconnectors.cognito.internal.storage.RemoteDataStorage.DatasetUpdates;
+import com.amazonaws.mobileconnectors.cognito.internal.storage.SQLiteLocalStorage;
 import com.amazonaws.mobileconnectors.cognito.internal.util.DatasetUtils;
 import com.amazonaws.mobileconnectors.cognito.internal.util.StringUtils;
 

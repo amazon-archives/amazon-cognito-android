@@ -17,11 +17,6 @@
 
 package com.amazonaws.mobileconnectors.cognito.internal.storage;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonWebServiceRequest;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
@@ -51,6 +46,11 @@ import com.amazonaws.services.cognitosync.model.ResourceConflictException;
 import com.amazonaws.services.cognitosync.model.ResourceNotFoundException;
 import com.amazonaws.services.cognitosync.model.UpdateRecordsRequest;
 import com.amazonaws.services.cognitosync.model.UpdateRecordsResult;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Cognito remote storage powered by AWS Cognito Sync service

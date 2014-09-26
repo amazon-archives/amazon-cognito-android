@@ -47,6 +47,7 @@ import java.util.List;
  * });
  * </pre>
  */
+
 public class CognitoSyncManager {
 
     private static final String TAG = "CognitoSyncManager";
@@ -75,6 +76,7 @@ public class CognitoSyncManager {
      * @param region Cognito sync region
      * @param provider a credentials provider
      */
+
     public CognitoSyncManager(Context context, String identityPoolId, Regions region,
             CognitoCachingCredentialsProvider provider) {
         if (context == null) {
