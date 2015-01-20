@@ -21,6 +21,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
@@ -28,6 +29,7 @@ import android.util.Log;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.cognito.exceptions.DataConflictException;
 import com.amazonaws.mobileconnectors.cognito.exceptions.DataStorageException;
+import com.amazonaws.mobileconnectors.cognito.exceptions.DatasetNotFoundException;
 import com.amazonaws.mobileconnectors.cognito.exceptions.NetworkException;
 import com.amazonaws.mobileconnectors.cognito.internal.storage.CognitoSyncStorage;
 import com.amazonaws.mobileconnectors.cognito.internal.storage.LocalStorage;
@@ -41,6 +43,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -122,7 +125,7 @@ class DefaultDataset implements Dataset {
             throw new IllegalArgumentException("callback can't ben null");
         }
 
-        if (!isNetworkAvailable()) {
+        if (!isNetworkAvailable(context)) {
             callback.onFailure(new NetworkException("Network connectivity unavailable."));
             return;
         }
@@ -137,12 +140,14 @@ class DefaultDataset implements Dataset {
                 boolean result = false;
                 try {
                     List<String> mergedDatasets = getLocalMergedDatasets();
+                    boolean doSync = true;
                     if (!mergedDatasets.isEmpty()) {
                         Log.i(TAG, "detected merge datasets " + datasetName);
-                        callback.onDatasetsMerged(DefaultDataset.this, mergedDatasets);
+                        doSync = callback.onDatasetsMerged(DefaultDataset.this, mergedDatasets);
                     }
-
-                    result = synchronizeInternal(callback, MAX_RETRY);
+                    if(doSync){
+                        result = synchronizeInternal(callback, MAX_RETRY);
+                    }
                 } catch (Exception e) {
                     callback.onFailure(new DataStorageException("Unknown exception", e));
                 }
@@ -174,7 +179,11 @@ class DefaultDataset implements Dataset {
         // if dataset is deleted locally, push it to remote
         if (lastSyncCount == -1) {
             try {
-                remote.deleteDataset(datasetName);
+                try {
+                    remote.deleteDataset(datasetName);
+                } catch(DatasetNotFoundException e) {
+                    //This exception will fire if this was a local-only dataset, but it should be ignored
+                }
                 local.purgeDataset(getIdentityId(), datasetName);
                 callback.onSuccess(DefaultDataset.this, Collections.<Record> emptyList());
                 return true;
@@ -223,28 +232,40 @@ class DefaultDataset implements Dataset {
         }
 
         List<Record> remoteRecords = datasetUpdates.getRecords();
+        lastSyncCount = datasetUpdates.getSyncCount();
+        
         if (!remoteRecords.isEmpty()) {
             // if conflict, prompt developer/user with callback
             List<SyncConflict> conflicts = new ArrayList<SyncConflict>();
-            for (Record remoteRecord : remoteRecords) {
+            Iterator<Record> iter = remoteRecords.iterator();
+            while(iter.hasNext()){
+            	Record remoteRecord = iter.next();
                 Record localRecord = local.getRecord(getIdentityId(),
                         datasetName,
                         remoteRecord.getKey());
                 // only when local is changed and its value is different
-                if (localRecord != null && localRecord.isModified()
+                if (localRecord != null && localRecord.isModified() 
+                        && localRecord.getSyncCount() != remoteRecord.getSyncCount()
                         && !StringUtils.equals(localRecord.getValue(), remoteRecord.getValue())) {
-                    conflicts.add(new SyncConflict(remoteRecord, localRecord));
+                	conflicts.add(new SyncConflict(remoteRecord, localRecord));
+                	//remove it from remote changes, it has been marked as a conflict
+                	//and will be updated by conflict resolution
+                	iter.remove();
                 }
             }
             if (!conflicts.isEmpty()) {
                 Log.i(TAG, String.format("%d records in conflict!", conflicts.size()));
-                boolean resume = callback.onConflict(DefaultDataset.this, conflicts);
-                return resume ? synchronizeInternal(callback, --retry) : resume;
+                if(!callback.onConflict(DefaultDataset.this, conflicts)){
+                	//if they didn't want to continue on resolving conflicts return
+                	return false;
+                }
             }
 
-            // save to local
-            Log.i(TAG, String.format("save %d records to local", remoteRecords.size()));
-            local.putRecords(getIdentityId(), datasetName, remoteRecords);
+            // if there are non-conflicting records from the remote, update them in local
+            if(!remoteRecords.isEmpty()){
+            	Log.i(TAG, String.format("save %d records to local", remoteRecords.size()));
+            	local.putRecords(getIdentityId(), datasetName, remoteRecords);
+            }
 
             // new last sync count
             Log.i(TAG, String.format("updated sync count %d", datasetUpdates.getSyncCount()));
@@ -258,8 +279,10 @@ class DefaultDataset implements Dataset {
             Log.i(TAG, String.format("push %d records to remote", localChanges.size()));
             List<Record> result = null;
             try {
+                SharedPreferences sp = getSharedPreferences();
+                String deviceId = sp.getString("deviceId", null);
                 result = remote.putRecords(datasetName, localChanges,
-                        datasetUpdates.getSyncSessionToken());
+                        datasetUpdates.getSyncSessionToken(), deviceId);
             } catch (DataConflictException dce) {
                 Log.i(TAG, "conflicts detected when pushing changes to remote.");
                 return synchronizeInternal(callback, --retry);
@@ -404,8 +427,7 @@ class DefaultDataset implements Dataset {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            NetworkInfo info = intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
-            if (info == null || !info.isAvailable()) {
+            if (!DefaultDataset.isNetworkAvailable(context)) {
                 Log.d(TAG, "Connectivity is unavailable.");
                 return;
             }
@@ -427,7 +449,7 @@ class DefaultDataset implements Dataset {
 
     @Override
     public void synchronizeOnConnectivity(SyncCallback callback) {
-        if (isNetworkAvailable()) {
+        if (isNetworkAvailable(context)) {
             synchronize(callback);
         } else {
             discardPendingSyncRequest();
@@ -455,7 +477,7 @@ class DefaultDataset implements Dataset {
         }
     }
 
-    boolean isNetworkAvailable() {
+    static boolean isNetworkAvailable(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm == null) {
@@ -463,5 +485,33 @@ class DefaultDataset implements Dataset {
         }
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null && activeNetwork.isConnected();
+    }
+
+    @Override
+    public long getLastSyncCount() {
+        return local.getLastSyncCount(getIdentityId(), datasetName);
+    }
+
+    @Override
+    public void unsubscribe() {
+        String deviceId = getSharedPreferences().getString("deviceId", "");
+        if (deviceId.isEmpty()) {
+            throw new IllegalStateException("Device hasn't been registered yet");
+        }
+        remote.unsubscribeFromDataset(datasetName, deviceId);
+    }
+
+    @Override
+    public void subscribe() {
+        String deviceId = getSharedPreferences().getString("deviceId", "");
+        if (deviceId.isEmpty()) {
+            throw new IllegalStateException("Device hasn't been registered yet");
+        }
+        remote.subscribeToDataset(datasetName, deviceId);
+    }
+
+    private SharedPreferences getSharedPreferences() {
+        return context.getSharedPreferences("com.amazonaws.mobileconnectors.cognito",
+                Context.MODE_PRIVATE);
     }
 }

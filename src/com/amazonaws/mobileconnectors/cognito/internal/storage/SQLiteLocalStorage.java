@@ -36,6 +36,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * An SQLite implementation of {@link LocalStorage}. Datasets are stored in a
@@ -115,7 +117,7 @@ public class SQLiteLocalStorage implements LocalStorage {
         private static final int DB_VERSION = 2;
 
         public DatabaseHelper(Context context, String cognitoId) {
-            super(context, cognitoId, null, DB_VERSION);
+            super(context.getApplicationContext(), cognitoId, null, DB_VERSION);
         }
 
         @Override
@@ -167,7 +169,7 @@ public class SQLiteLocalStorage implements LocalStorage {
     /**
      * A database helper.
      */
-    final DatabaseHelper helper;
+    private final DatabaseHelper helper;
 
     /**
      * Creates a {@link SQLiteLocalStorage} object.
@@ -619,12 +621,37 @@ public class SQLiteLocalStorage implements LocalStorage {
         values.put(RecordColumns.KEY, record.getKey());
         values.put(RecordColumns.VALUE, record.getValue());
         values.put(RecordColumns.SYNC_COUNT, record.getSyncCount());
-        values.put(RecordColumns.MODIFIED, false);
+        values.put(RecordColumns.MODIFIED, record.isModified());
         long row = db.replace(TABLE_RECORDS, null, values);
         if (row == -1) {
             Log.e(TAG, String.format("failed to store record [%s: %s] into dataset %s",
                     record.getKey(), record.getValue(), datasetName));
         }
+    }
+    
+    /**
+     * Checks the metadata of all datasets for one identity id and another to 
+     * see if any have the same name.
+     *
+     * @param oldIdentityId the old identity id, which the user is changing from
+     * @param newIdentityId the new identity id, which the user is changing to
+     * @return a set of all of the non unique names
+     */
+    Set<String> getCommonDatasetNames(String oldIdentityId, String newIdentityId){
+        Set<String> newNameSet = new HashSet<String>();
+        Set<String> oldNameSet = new HashSet<String>();
+        if(oldIdentityId != null && newIdentityId != null){
+            List<DatasetMetadata> newDatasets = getDatasets(newIdentityId);
+            List<DatasetMetadata> oldDatasets = getDatasets(oldIdentityId);
+            for(DatasetMetadata oldMetaData : oldDatasets){
+                oldNameSet.add(oldMetaData.getDatasetName());
+            }
+            for(DatasetMetadata newMetaData : newDatasets){
+                newNameSet.add(newMetaData.getDatasetName());
+            }
+            oldNameSet.retainAll(newNameSet);
+        }
+        return oldNameSet;
     }
 
     @Override
@@ -636,6 +663,32 @@ public class SQLiteLocalStorage implements LocalStorage {
             // having a cognito id, just reparent datasets from unknown to
             // newIdentityId
             if (DatasetUtils.UNKNOWN_IDENTITY_ID.equals(oldIdentityId)) {
+                Set<String> commonDatasetNames = getCommonDatasetNames(oldIdentityId, newIdentityId);
+                // append UNKNOWN to the name of all non unique datasets
+                if(commonDatasetNames.size() > 0){
+                    for(String oldDatasetName : commonDatasetNames){
+                        db.execSQL("UPDATE " + TABLE_DATASETS
+                                + " SET "
+                                + DatasetColumns.DATASET_NAME + " = '" + oldDatasetName + "." + oldIdentityId + "'"
+                                + " WHERE " + DatasetColumns.IDENTITY_ID + " = ?"
+                                + " AND " + DatasetColumns.DATASET_NAME + " = ?",
+                                new String[] {
+                                    oldIdentityId, 
+                                    oldDatasetName
+                                });
+                        
+                        db.execSQL("UPDATE " + TABLE_RECORDS
+                                + " SET "
+                                + RecordColumns.DATASET_NAME + " = '" + oldDatasetName + "." + oldIdentityId + "'"
+                                + " WHERE " + RecordColumns.IDENTITY_ID + " = ?"
+                                + " AND " + RecordColumns.DATASET_NAME + " = ?",
+                                new String[] {
+                                    oldIdentityId,
+                                    oldDatasetName
+                                });
+                    }
+                }
+                
                 // datasets table
                 db.execSQL("UPDATE " + TABLE_DATASETS
                         + " SET "
@@ -644,7 +697,7 @@ public class SQLiteLocalStorage implements LocalStorage {
                         new String[] {
                             oldIdentityId
                         });
-
+                
                 // records table
                 db.execSQL("UPDATE " + TABLE_RECORDS
                         + " SET "
@@ -654,6 +707,7 @@ public class SQLiteLocalStorage implements LocalStorage {
                             oldIdentityId
                         });
             } else {
+
                 // 1. copy oldIdentityId/dataset to newIdentityId/dataset
                 // datasets table
                 db.execSQL("INSERT INTO " + TABLE_DATASETS + "("

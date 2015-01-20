@@ -9,7 +9,7 @@
  * 
  * <pre>
  * CognitoCachingCredentialsProvider provider = new CognitoCachingCredentialsProvider(
- *         context, awsAccountId, identityPoolId, unauthRoleArn, authRoleArn);
+ *         context, awsAccountId, identityPoolId, unauthRoleArn, authRoleArn, Regions.US_EAST_1);
  * CognitoSyncManager client = new CognitoSyncManager(context, identityPoolId, provider);
  * 
  * Dataset dataset = client.openOrCreateDataset(&quot;default_dataset&quot;);

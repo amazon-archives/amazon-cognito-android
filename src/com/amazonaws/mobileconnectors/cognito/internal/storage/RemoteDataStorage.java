@@ -70,9 +70,30 @@ public interface RemoteDataStorage {
      * @param records list of records to be updated remotely
      * @param syncSessionToken the sync session token retrieved from
      *            {@link #listUpdates(String, long)}
+     * @param deviceId the string deviceId for use with push sync updates, null
+     *            otherwise
      */
-    public List<Record> putRecords(String datasetName, List<Record> records, String syncSessionToken)
+    public List<Record> putRecords(String datasetName, List<Record> records,
+            String syncSessionToken, String deviceId)
             throws DatasetNotFoundException, DataConflictException;
+
+    /**
+     * Unsubscribes the user from receiving notifications from a dataset they
+     * had been previously subscribed to.
+     * 
+     * @param datasetName the name of the dataset to be unsubscribed from
+     * @param deviceId the id of the device to unsubscribe
+     */
+    public void unsubscribeFromDataset(String datasetName, String deviceId);
+
+    /**
+     * Subscribes the user to update notifications for a dataset. This should
+     * only be called after the device has been registered.
+     * 
+     * @param datasetName the name of the dataset to be subscribed to
+     * @param deviceId the id of the device to subscribe
+     */
+    public void subscribeToDataset(String datasetName, String deviceId);
 
     /**
      * Deletes a dataset.

@@ -20,19 +20,17 @@ package com.amazonaws.mobileconnectors.cognito.exceptions;
 import com.amazonaws.AmazonClientException;
 
 /**
- * This exception is thrown when an error occurs during an data storage
- * operation.
+ * An exception thrown when a registration of a device for silentsync fails
  */
-public class DataStorageException extends AmazonClientException {
+public class RegistrationFailedException extends AmazonClientException {
+    private static final long serialVersionUID = 5706724903415180392L;
 
-    private static final long serialVersionUID = -6906342391685175623L;
-
-    public DataStorageException(String detailMessage, Throwable throwable) {
-        super(detailMessage, throwable);
+    public RegistrationFailedException(String message, Throwable throwable) {
+        super(message, throwable);
     }
 
-    public DataStorageException(String detailMessage) {
-        super(detailMessage);
+    public RegistrationFailedException(String message) {
+        super(message);
     }
 
 }

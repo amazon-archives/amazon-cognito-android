@@ -32,7 +32,7 @@ import java.util.Map;
  * Dataset dataset = cognitoClient.openOrCreate(&quot;new dataset&quot;);
  * // synchronize. It pulls down latest changes from remote storage
  * // and push local changes to remote storage
- * dataset.synchronize();
+ * dataset.synchronize(syncCallback);
  * // reads value
  * String highScore = dataset.getValue(&quot;high_score&quot;);
  * String name = dataset.getValue(&quot;name&quot;);
@@ -40,7 +40,7 @@ import java.util.Map;
  * dataset.put(&quot;high_score&quot;, &quot;90&quot;);
  * dataset.put(&quot;name&quot;, &quot;John&quot;);
  * // push changes to remote if needed
- * dataset.synchronize();
+ * dataset.synchronizesyncCallback);
  * </pre>
  */
 public interface Dataset {
@@ -168,6 +168,25 @@ public interface Dataset {
     void delete();
 
     /**
+     * Get the last sync count of this {@link Dataset}.
+     * 
+     * @return last sync count
+     */
+    long getLastSyncCount();
+
+    /**
+     * Subscribes the user to update notifications for a dataset. This should
+     * only be called after the device has been registered.
+     */
+    void subscribe();
+
+    /**
+     * Unsubscribe the user from receiving notifications on updates to a dataset
+     * which has previously been subscribed to.
+     */
+    void unsubscribe();
+
+    /**
      * This is the callback used in {@link Dataset#synchronize(SyncCallback)}.
      */
     interface SyncCallback {
@@ -249,4 +268,5 @@ public interface Dataset {
          */
         void onFailure(DataStorageException dse);
     }
+
 }

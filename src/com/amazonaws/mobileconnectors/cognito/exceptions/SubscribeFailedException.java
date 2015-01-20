@@ -20,19 +20,18 @@ package com.amazonaws.mobileconnectors.cognito.exceptions;
 import com.amazonaws.AmazonClientException;
 
 /**
- * This exception is thrown when an error occurs during an data storage
- * operation.
+ * An exception that's thrown when the subscription to a silent sync dataset
+ * fails
  */
-public class DataStorageException extends AmazonClientException {
+public class SubscribeFailedException extends AmazonClientException {
+    private static final long serialVersionUID = 5706724903415180392L;
 
-    private static final long serialVersionUID = -6906342391685175623L;
-
-    public DataStorageException(String detailMessage, Throwable throwable) {
-        super(detailMessage, throwable);
+    public SubscribeFailedException(String message, Throwable throwable) {
+        super(message, throwable);
     }
 
-    public DataStorageException(String detailMessage) {
-        super(detailMessage);
+    public SubscribeFailedException(String message) {
+        super(message);
     }
 
 }

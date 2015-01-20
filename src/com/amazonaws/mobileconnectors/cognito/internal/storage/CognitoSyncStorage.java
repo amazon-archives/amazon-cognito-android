@@ -17,6 +17,8 @@
 
 package com.amazonaws.mobileconnectors.cognito.internal.storage;
 
+import android.util.Log;
+
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonWebServiceRequest;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
@@ -28,9 +30,12 @@ import com.amazonaws.mobileconnectors.cognito.exceptions.DataLimitExceededExcept
 import com.amazonaws.mobileconnectors.cognito.exceptions.DataStorageException;
 import com.amazonaws.mobileconnectors.cognito.exceptions.DatasetNotFoundException;
 import com.amazonaws.mobileconnectors.cognito.exceptions.NetworkException;
+import com.amazonaws.mobileconnectors.cognito.exceptions.SubscribeFailedException;
+import com.amazonaws.mobileconnectors.cognito.exceptions.UnsubscribeFailedException;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.cognitoidentity.model.NotAuthorizedException;
+import com.amazonaws.services.cognitosync.AmazonCognitoSync;
 import com.amazonaws.services.cognitosync.AmazonCognitoSyncClient;
 import com.amazonaws.services.cognitosync.model.DeleteDatasetRequest;
 import com.amazonaws.services.cognitosync.model.DescribeDatasetRequest;
@@ -44,6 +49,8 @@ import com.amazonaws.services.cognitosync.model.Operation;
 import com.amazonaws.services.cognitosync.model.RecordPatch;
 import com.amazonaws.services.cognitosync.model.ResourceConflictException;
 import com.amazonaws.services.cognitosync.model.ResourceNotFoundException;
+import com.amazonaws.services.cognitosync.model.SubscribeToDatasetRequest;
+import com.amazonaws.services.cognitosync.model.UnsubscribeFromDatasetRequest;
 import com.amazonaws.services.cognitosync.model.UpdateRecordsRequest;
 import com.amazonaws.services.cognitosync.model.UpdateRecordsResult;
 
@@ -57,11 +64,13 @@ import java.util.List;
  */
 public class CognitoSyncStorage implements RemoteDataStorage {
 
+    private static final String TAG = "CognitoSyncStorage";
+
     /**
      * Identity pool id
      */
     private final String identityPoolId;
-    private final AmazonCognitoSyncClient client;
+    private final AmazonCognitoSync client;
     private final CognitoCachingCredentialsProvider provider;
 
     /**
@@ -69,7 +78,17 @@ public class CognitoSyncStorage implements RemoteDataStorage {
      */
     private String userAgent;
 
-    public CognitoSyncStorage(String identityPoolId, Regions region, CognitoCachingCredentialsProvider provider) {
+    public CognitoSyncStorage(String identityPoolId, AmazonCognitoSync client,
+            CognitoCachingCredentialsProvider provider) {
+        this.identityPoolId = identityPoolId;
+        this.client = client;
+        this.provider = provider;
+        userAgent = "";
+    }
+
+    @Deprecated
+    public CognitoSyncStorage(String identityPoolId, Regions region,
+            CognitoCachingCredentialsProvider provider) {
         this.identityPoolId = identityPoolId;
         this.provider = provider;
         client = new AmazonCognitoSyncClient(provider);
@@ -154,11 +173,13 @@ public class CognitoSyncStorage implements RemoteDataStorage {
      * java.util.List)
      */
     @Override
-    public List<Record> putRecords(String datasetName, List<Record> records, String syncSessionToken) {
+    public List<Record> putRecords(String datasetName, List<Record> records,
+            String syncSessionToken, String deviceId) {
         UpdateRecordsRequest request = new UpdateRecordsRequest();
         appendUserAgent(request, userAgent);
         request.setDatasetName(datasetName);
         request.setIdentityPoolId(identityPoolId);
+        request.setDeviceId(deviceId);
         request.setSyncSessionToken(syncSessionToken);
         // create patches
         List<RecordPatch> patches = new ArrayList<RecordPatch>();
@@ -229,6 +250,7 @@ public class CognitoSyncStorage implements RemoteDataStorage {
                 .deviceLastModifiedDate(model.getDeviceLastModifiedDate() == null
                         ? new Date(0)
                         : model.getDeviceLastModifiedDate())
+                .modified(false)
                 .build();
     }
 
@@ -305,6 +327,39 @@ public class CognitoSyncStorage implements RemoteDataStorage {
      */
     void appendUserAgent(AmazonWebServiceRequest request, String userAgent) {
         request.getRequestClientOptions().appendUserAgent(userAgent);
+    }
+
+
+    @Override
+    public void unsubscribeFromDataset(String datasetName, String deviceId) {
+        String identityId = provider.getIdentityId();
+        UnsubscribeFromDatasetRequest request = new UnsubscribeFromDatasetRequest()
+                .withIdentityPoolId(provider.getIdentityPoolId())
+                .withIdentityId(identityId)
+                .withDatasetName(datasetName)
+                .withDeviceId(deviceId);
+        try {
+            client.unsubscribeFromDataset(request);
+        } catch (AmazonClientException ace) {
+            Log.e(TAG, "Failed to unsubscribe from dataset", ace);
+            throw new UnsubscribeFailedException("Failed to unsubscribe from dataset", ace);
+        }
+    }
+
+    @Override
+    public void subscribeToDataset(String datasetName, String deviceId) {
+        String identityId = provider.getIdentityId();
+        SubscribeToDatasetRequest request = new SubscribeToDatasetRequest()
+                .withIdentityPoolId(provider.getIdentityPoolId())
+                .withIdentityId(identityId)
+                .withDatasetName(datasetName)
+                .withDeviceId(deviceId);
+        try {
+            client.subscribeToDataset(request);
+        } catch (AmazonClientException ace) {
+            Log.e(TAG, "Failed to subscribe to dataset", ace);
+            throw new SubscribeFailedException("Failed to subscribe to dataset", ace);
+        }
     }
 
     private DatasetMetadata modelToDatasetMetadata(
@@ -420,4 +475,5 @@ public class CognitoSyncStorage implements RemoteDataStorage {
             }
         }
     }
+
 }

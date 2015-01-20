@@ -17,6 +17,8 @@
 
 package com.amazonaws.mobileconnectors.cognito;
 
+import java.util.Date;
+
 /**
  * This consists of the conflicting record from the remote storage and the local
  * storage.
@@ -84,6 +86,7 @@ public class SyncConflict {
                 .lastModifiedDate(remoteRecord.getLastModifiedDate())
                 .lastModifiedBy(remoteRecord.getLastModifiedBy())
                 .deviceLastModifiedDate(remoteRecord.getDeviceLastModifiedDate())
+                .modified(false)
                 .build();
     }
 
@@ -110,13 +113,25 @@ public class SyncConflict {
      * @return resolved record
      */
     public Record resolveWithValue(String newValue) {
+    	Date now = new Date();
         return new Record.Builder(key)
                 .value(newValue)
                 .syncCount(remoteRecord.getSyncCount())
-                .lastModifiedDate(localRecord.getLastModifiedDate())
+                .lastModifiedDate(now)
                 .lastModifiedBy(localRecord.getLastModifiedBy())
-                .deviceLastModifiedDate(localRecord.getDeviceLastModifiedDate())
+                .deviceLastModifiedDate(now)
                 .modified(true)
                 .build();
+    }
+
+    /**
+     * Resolves conflict with last writer wins. The record with a later last
+     * modified date wins the conflict.
+     * 
+     * @return the record that has a later last modified date.
+     */
+    public Record resolveWithLastWriterWins() {
+        return remoteRecord.getLastModifiedDate().after(localRecord.getLastModifiedDate()) ?
+                resolveWithRemoteRecord() : resolveWithLocalRecord();
     }
 }
