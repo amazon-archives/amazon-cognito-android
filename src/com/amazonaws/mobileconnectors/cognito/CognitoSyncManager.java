@@ -127,9 +127,13 @@ public class CognitoSyncManager {
         provider.registerIdentityChangedListener(new IdentityChangedListener() {
             @Override
             public void identityChanged(String oldIdentityId, String newIdentityId) {
+                //The unknown check was added to new ids to handle keeping ids sync data
+                //after a corrupt id change. In case of overlap, the logic appending old id 
+                // to datasets owned by the old id will avoid the unique constraint issue
                 Log.i(TAG, "identity change detected");
-                local.changeIdentityId(oldIdentityId == null ? DatasetUtils.UNKNOWN_IDENTITY_ID
-                        : oldIdentityId, newIdentityId);
+                local.changeIdentityId(
+                        oldIdentityId == null ? DatasetUtils.UNKNOWN_IDENTITY_ID : oldIdentityId, 
+                        newIdentityId == null ? DatasetUtils.UNKNOWN_IDENTITY_ID : newIdentityId);
             }
         });
     }
@@ -169,7 +173,7 @@ public class CognitoSyncManager {
      * this method in the main thread will result in
      * NetworkOnMainThreadException.
      * 
-     * @throws DataStorageException thrown when fail to fresh dataset metadata
+     * @throws DataStorageException thrown when fail to refresh dataset metadata
      */
     public void refreshDatasetMetadata() throws DataStorageException {
         List<DatasetMetadata> datasets = remote.getDatasets();
@@ -230,7 +234,8 @@ public class CognitoSyncManager {
     }
 
     /**
-     * Checks the cache to see if the registration information is saved
+     * Checks the cache to see if the registration information from a registration 
+     * with push synchronization is saved to the device
      * 
      * @return true if it has, false if it hasn't
      */
@@ -256,7 +261,8 @@ public class CognitoSyncManager {
 
     /**
      * Subscribes the user to all datasets that the local device knows of for
-     * push sync notifications for all datasets
+     * push sync notifications, so that any changes to any of these datasets 
+     * will result in notifications to this device.
      */
     public void subscribeAll() {
         List<String> datasetNames = new ArrayList<String>();
@@ -282,7 +288,8 @@ public class CognitoSyncManager {
 
     /**
      * Unsubscribes the user to all datasets that the local device knows of from
-     * push sync notifications for all datasets
+     * push sync notifications, so that no changes to any of these datasets
+     * will result in notifications to this device.
      */
     public void unsubscribeAll() {
         List<String> datasetNames = new ArrayList<String>();
@@ -317,13 +324,15 @@ public class CognitoSyncManager {
 
     /**
      * Converts the notification from Cognito push sync to an object that has
-     * easy access to all of the relevant information.
+     * easy access to all of the relevant information. This should be called only 
+     * using a Cognito push synchronization message, anything else will return an empty object. 
+     * PushSyncUpdate.isPushSyncUpdate(Intent intent) can be used to confirm.
      * 
      * @param extras the bundle returned from the intent.getExtras() call
      * @return the PushSyncUpdate that bundle is converted to
      */
     public PushSyncUpdate getPushSyncUpdate(Intent intent) {
-        return new PushSyncUpdate(intent.getExtras());
+        return new PushSyncUpdate(intent);
     }
 
     private SharedPreferences getSharedPreferences() {

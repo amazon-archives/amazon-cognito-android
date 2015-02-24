@@ -182,7 +182,7 @@ class DefaultDataset implements Dataset {
                 try {
                     remote.deleteDataset(datasetName);
                 } catch(DatasetNotFoundException e) {
-                    //This exception will fire if this was a local-only dataset, but it should be ignored
+                    //This exception will fire if this was a local-only dataset and should be ignored
                 }
                 local.purgeDataset(getIdentityId(), datasetName);
                 callback.onSuccess(DefaultDataset.this, Collections.<Record> emptyList());
@@ -294,7 +294,7 @@ class DefaultDataset implements Dataset {
             // update local meta data
             local.putRecords(getIdentityId(), datasetName, result);
 
-            // verify the server sync count is increased exactly by one, aka no
+            // verify the server sync count is increased exactly by one, meaning no
             // other updates were made during this update.
             long newSyncCount = 0;
             for (Record record : result) {
