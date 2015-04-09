@@ -1,0 +1,106 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.amazonaws</groupId>
+  <artifactId>aws-android-sdk-cognito</artifactId>
+  <packaging>jar</packaging>
+  <name>AWS SDK for Android - Amazon Cognito Sync</name>
+  <version>2.2.0</version>
+  <description>The AWS Android SDK for Amazon Cognito Sync module holds the client classes that are used for communicating with Amazon Cognito Sync Service</description>
+  <url>http://aws.amazon.com/sdkforandroid</url>
+
+  <properties>
+    <project.build.sourceEncoding>
+      UTF-8
+    </project.build.sourceEncoding>
+    <project.reporting.outputEncoding>
+      UTF-8
+    </project.reporting.outputEncoding>
+  </properties>
+
+  <scm>
+    <url>http://github.com/aws/amazon-cognito-android.git</url>
+  </scm>
+
+  <licenses>
+    <license>
+      <name>Amazon Software License</name>
+      <url>http://aws.amazon.com/asl/</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-android-sdk-core</artifactId>
+      <optional>false</optional>
+      <version>2.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.android</groupId>
+      <artifactId>android</artifactId>
+      <version>2.3.3</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.9.1</version>
+        <configuration>
+          <excludePackageNames>*.internal:*.transform</excludePackageNames>
+          <minmemory>128m</minmemory>
+          <maxmemory>1024m</maxmemory>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>publishing</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>1.5.1</version>
+            <extensions>true</extensions>
+            <configuration>
+              <serverId>sonatype-nexus-staging</serverId>
+              <nexusUrl>https://oss.sonatype.org</nexusUrl>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
