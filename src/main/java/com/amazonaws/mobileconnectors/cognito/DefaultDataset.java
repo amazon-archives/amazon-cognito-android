@@ -170,7 +170,8 @@ class DefaultDataset implements Dataset {
      */
     synchronized boolean synchronizeInternal(final SyncCallback callback, int retry) {
         if (retry < 0) {
-            Log.e(TAG, "synchronize failed because it exceeds maximum retry");
+            Log.e(TAG, "Synchronize failed because it exceeded the maximum retries");
+            callback.onFailure(new DataStorageException("Synchronize failed because it exceeded the maximum retries"));
             return false;
         }
 
