@@ -71,8 +71,6 @@ public class DescribeDatasetRequestMarshaller implements Marshaller<Request<Desc
         }
         request.setResourcePath(uriResourcePath);
         
-        request.addHeader("Content-Length", "0");
-        request.setContent(new ByteArrayInputStream(new byte[0]));
         if (!request.getHeaders().containsKey("Content-Type")) {
             request.addHeader("Content-Type", "application/x-amz-json-1.0");
         }

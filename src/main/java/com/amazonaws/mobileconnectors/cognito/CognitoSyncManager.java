@@ -127,10 +127,12 @@ public class CognitoSyncManager {
         provider.registerIdentityChangedListener(new IdentityChangedListener() {
             @Override
             public void identityChanged(String oldIdentityId, String newIdentityId) {
-                Log.i(TAG, "identity change detected");
-                local.changeIdentityId(
-                        oldIdentityId == null ? DatasetUtils.UNKNOWN_IDENTITY_ID : oldIdentityId, 
-                        newIdentityId);
+                if(newIdentityId != null) {
+                    Log.i(TAG, "identity change detected");
+                    local.changeIdentityId(
+                            oldIdentityId == null ? DatasetUtils.UNKNOWN_IDENTITY_ID : oldIdentityId, 
+                            newIdentityId);
+                }
             }
         });
     }

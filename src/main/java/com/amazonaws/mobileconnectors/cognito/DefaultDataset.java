@@ -276,6 +276,12 @@ class DefaultDataset implements Dataset {
 
         // push changes to remote
         List<Record> localChanges = getModifiedRecords();
+        long maxPatchSyncCount = 0;
+        for(Record record : localChanges){
+            if(record.getSyncCount() > maxPatchSyncCount){
+                maxPatchSyncCount = record.getSyncCount();
+            }
+        }
         if (!localChanges.isEmpty()) {
             Log.i(TAG, String.format("push %d records to remote", localChanges.size()));
             List<Record> result = null;
@@ -286,6 +292,9 @@ class DefaultDataset implements Dataset {
                         datasetUpdates.getSyncSessionToken(), deviceId);
             } catch (DataConflictException dce) {
                 Log.i(TAG, "conflicts detected when pushing changes to remote.");
+                if(lastSyncCount > maxPatchSyncCount){
+                    local.updateLastSyncCount(getIdentityId(), datasetName, maxPatchSyncCount);
+                }
                 return synchronizeInternal(callback, --retry);
             } catch (DataStorageException dse) {
                 callback.onFailure(dse);
