@@ -34,7 +34,6 @@ import com.amazonaws.mobileconnectors.cognito.exceptions.SubscribeFailedExceptio
 import com.amazonaws.mobileconnectors.cognito.exceptions.UnsubscribeFailedException;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
-import com.amazonaws.services.cognitoidentity.model.NotAuthorizedException;
 import com.amazonaws.services.cognitosync.AmazonCognitoSync;
 import com.amazonaws.services.cognitosync.AmazonCognitoSyncClient;
 import com.amazonaws.services.cognitosync.model.DeleteDatasetRequest;
@@ -45,6 +44,7 @@ import com.amazonaws.services.cognitosync.model.ListDatasetsRequest;
 import com.amazonaws.services.cognitosync.model.ListDatasetsResult;
 import com.amazonaws.services.cognitosync.model.ListRecordsRequest;
 import com.amazonaws.services.cognitosync.model.ListRecordsResult;
+import com.amazonaws.services.cognitosync.model.NotAuthorizedException;
 import com.amazonaws.services.cognitosync.model.Operation;
 import com.amazonaws.services.cognitosync.model.RecordPatch;
 import com.amazonaws.services.cognitosync.model.ResourceConflictException;
@@ -328,7 +328,6 @@ public class CognitoSyncStorage implements RemoteDataStorage {
     void appendUserAgent(AmazonWebServiceRequest request, String userAgent) {
         request.getRequestClientOptions().appendUserAgent(userAgent);
     }
-
 
     @Override
     public void unsubscribeFromDataset(String datasetName, String deviceId) {

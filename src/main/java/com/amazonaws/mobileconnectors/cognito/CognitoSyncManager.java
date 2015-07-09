@@ -49,7 +49,7 @@ import java.util.List;
  * CognitoCachingCredentialsProvider provider = new CognitoCachingCredentialsProvider(context,
  *         awsAccountId, identityPoolId, unauthRoleArn, authRoleArn, Regions.US_EAST_1);
  * CognitoClientManager client = new CognitoClientManager(context, Regions.US_EAST_1, provider);
- *
+ * 
  * Dataset dataset = client.openOrCreateDataset(&quot;default_dataset&quot;);
  * dataset.put(&quot;high_score&quot;, &quot;100&quot;);
  * dataset.synchronize(new SyncCallback() {
@@ -101,14 +101,15 @@ public class CognitoSyncManager {
     }
 
     /**
-     * Constructs a CognitoSyncManager object.
-     *
-     * @param context a context of the app
-     * @param region Cognito sync region
-     * @param provider a credentials provider
+     * Final constructor. Package private to allow dependency injection
+     * 
+     * @param context
+     * @param region
+     * @param provider
+     * @param syncClient
      */
-    public CognitoSyncManager(Context context, Regions region,
-            CognitoCachingCredentialsProvider provider) {
+    CognitoSyncManager(Context context, Regions region,
+            CognitoCachingCredentialsProvider provider, AmazonCognitoSyncClient syncClient) {
         if (context == null) {
             throw new IllegalArgumentException("context can't be null");
         }
@@ -120,21 +121,35 @@ public class CognitoSyncManager {
                 local = new SQLiteLocalStorage(context, DATABASE_NAME);
             }
         }
-        syncClient = new AmazonCognitoSyncClient(provider);
+
+        this.syncClient = syncClient;
         syncClient.setRegion(Region.getRegion(region));
         remote = new CognitoSyncStorage(identityPoolId, syncClient, provider);
         remote.setUserAgent(USER_AGENT);
         provider.registerIdentityChangedListener(new IdentityChangedListener() {
             @Override
             public void identityChanged(String oldIdentityId, String newIdentityId) {
-                if(newIdentityId != null) {
+                if (newIdentityId != null) {
                     Log.i(TAG, "identity change detected");
                     local.changeIdentityId(
-                            oldIdentityId == null ? DatasetUtils.UNKNOWN_IDENTITY_ID : oldIdentityId, 
+                            oldIdentityId == null ? DatasetUtils.UNKNOWN_IDENTITY_ID
+                                    : oldIdentityId,
                             newIdentityId);
                 }
             }
         });
+    }
+
+    /**
+     * Constructs a CognitoSyncManager object.
+     *
+     * @param context a context of the app
+     * @param region Cognito sync region
+     * @param provider a credentials provider
+     */
+    public CognitoSyncManager(Context context, Regions region,
+            CognitoCachingCredentialsProvider provider) {
+        this(context, region, provider, new AmazonCognitoSyncClient(provider));
     }
 
     /**
@@ -182,7 +197,8 @@ public class CognitoSyncManager {
     /**
      * Wipes all user data cached locally, including identity id, session
      * credentials, dataset metadata, and all records. Any data that hasn't been
-     * synced will be lost. This method should be called after logging out a customer.
+     * synced will be lost. This method should be called after logging out a
+     * customer.
      */
     public void wipeData() {
         provider.clear();
@@ -195,11 +211,12 @@ public class CognitoSyncManager {
     }
 
     /**
-     * Register device for push sync. Upon calling this method, the device will
-     * be registered with the platform in use via Cognito, and reconcile that
-     * registration with the Cognito system
+     * Register device for push sync for the specified platform. Once this
+     * device is registered and you have subscribed to a dataset, this device
+     * will receive a push notification if the dataset subscribed to is changed
+     * by any other device.
      *
-     * @param platform Platform of the device, one of GCM, ADM
+     * @param platform Platform of the device, GCM or ADM
      * @param token Device token of the device, gotten when registered for the
      *            platform in question.
      */
@@ -220,10 +237,10 @@ public class CognitoSyncManager {
 
         try {
             RegisterDeviceResult result = syncClient.registerDevice(request);
+            // Save this first as the namespacing below will need to look it up
+            sp.edit().putString(namespaceId("platform"), platform).apply();
             String deviceId = result.getDeviceId();
-            sp.edit().putString("deviceId", deviceId)
-                    .putString("platform", platform)
-                    .putString("token", token)
+            sp.edit().putString(namespaceIdPlatform("deviceId"), deviceId)
                     .apply();
             Log.i(TAG, "Device is registered successfully: " + deviceId);
         } catch (AmazonClientException ace) {
@@ -231,31 +248,48 @@ public class CognitoSyncManager {
             throw new RegistrationFailedException("Failed to register device", ace);
         }
     }
+    
+    /**
+     * Gets the push sync device id of the device in use. This device id 
+     * is unique per identity id, and helps identify the endpoint when Cognito is sending 
+     * push updates.
+     * 
+     * @return the device id of the current user's device
+     */
+    public String getDeviceId() {
+    	return getSharedPreferences().getString(namespaceIdPlatform("deviceId"), "");
+    }
 
     /**
-     * Checks the cache to see if the registration information from a registration
-     * with push synchronization is saved to the device
+     * Checks the cache to see if the registration information from a
+     * registration with push synchronization is saved to the device for the
+     * current identity. Device registrations are unique on a per
+     * identity/platform basis.
      *
      * @return true if it has, false if it hasn't
      */
     public boolean isDeviceRegistered() {
+        if (provider.getCachedIdentityId() == null) {
+            return false;
+        }
         SharedPreferences sp = getSharedPreferences();
-        return !sp.getString("deviceId", "").isEmpty()
-                && !sp.getString("platform", "").isEmpty()
-                && !sp.getString("token", "").isEmpty();
+
+        return !sp.getString(namespaceIdPlatform("deviceId"), "").isEmpty()
+                && !sp.getString(namespaceId("platform"), "").isEmpty();
     }
 
     /**
-     * Unregisters the device for push sync. This will clear the local cache
-     * that blocks the device from registering, but not clearing the information
-     * from outside the device
+     * Unregisters the device for push sync for the current identity. This will
+     * clear the local cache that blocks the device from registering, but not
+     * clearing the information from outside the device.
      */
     public void unregisterDevice() {
-        SharedPreferences sp = getSharedPreferences();
-        sp.edit().remove("deviceId")
-                .remove("platform")
-                .remove("token")
-                .apply();
+        if (provider.getCachedIdentityId() != null) {
+            SharedPreferences sp = getSharedPreferences();
+            sp.edit().remove(namespaceIdPlatform("deviceId"))
+                    .remove(namespaceId("platform"))
+                    .apply();
+        }
     }
 
     /**
@@ -287,8 +321,8 @@ public class CognitoSyncManager {
 
     /**
      * Unsubscribes the user to all datasets that the local device knows of from
-     * push sync notifications, so that no changes to any of these datasets
-     * will result in notifications to this device.
+     * push sync notifications, so that no changes to any of these datasets will
+     * result in notifications to this device.
      */
     public void unsubscribeAll() {
         List<String> datasetNames = new ArrayList<String>();
@@ -323,9 +357,10 @@ public class CognitoSyncManager {
 
     /**
      * Converts the notification from Cognito push sync to an object that has
-     * easy access to all of the relevant information. This should be called only
-     * using a Cognito push synchronization message, anything else will return an empty object.
-     * PushSyncUpdate.isPushSyncUpdate(Intent intent) can be used to confirm.
+     * easy access to all of the relevant information. This should be called
+     * only using a Cognito push synchronization message, anything else will
+     * return an empty object. PushSyncUpdate.isPushSyncUpdate(Intent intent)
+     * can be used to confirm.
      *
      * @param extras the bundle returned from the intent.getExtras() call
      * @return the PushSyncUpdate that bundle is converted to
@@ -337,6 +372,22 @@ public class CognitoSyncManager {
     private SharedPreferences getSharedPreferences() {
         return context.getSharedPreferences("com.amazonaws.mobileconnectors.cognito",
                 Context.MODE_PRIVATE);
+    }
+
+    // prefix the key with identity id and platform
+    String namespaceIdPlatform(String key) {
+        String platform = getSharedPreferences().getString(namespaceId("platform"), "");
+        return namespaceId(platform) + "." + key;
+    }
+
+    // prefix the name with the cached identity id
+    String namespaceId(String key) {
+        // This is only called if we've determined the cache isn't empty or
+        // after a get id call.
+        // It could also be called from a place on the main thread. As a result,
+        // we check the cache
+        // to do the namespacing by id.
+        return provider.getCachedIdentityId() + "." + key;
     }
 
     /**

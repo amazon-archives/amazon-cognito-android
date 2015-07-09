@@ -122,7 +122,7 @@ class DefaultDataset implements Dataset {
     @Override
     public void synchronize(final SyncCallback callback) {
         if (callback == null) {
-            throw new IllegalArgumentException("callback can't ben null");
+            throw new IllegalArgumentException("callback can't be null");
         }
 
         if (!isNetworkAvailable(context)) {
@@ -145,7 +145,7 @@ class DefaultDataset implements Dataset {
                         Log.i(TAG, "detected merge datasets " + datasetName);
                         doSync = callback.onDatasetsMerged(DefaultDataset.this, mergedDatasets);
                     }
-                    if(doSync){
+                    if (doSync) {
                         result = synchronizeInternal(callback, MAX_RETRY);
                     }
                 } catch (Exception e) {
@@ -162,6 +162,204 @@ class DefaultDataset implements Dataset {
     }
 
     /**
+     * Deletes the remote dataset, and purges the local dataset.
+     * 
+     * @param callback
+     * @return Success or failure
+     */
+    boolean deleteLocalAndPurgeRemoteDataset(final SyncCallback callback) {
+        try {
+            try {
+                remote.deleteDataset(datasetName);
+            } catch (DatasetNotFoundException e) {
+                // This exception will fire if this was a local-only dataset and
+                // should be ignored
+            }
+            local.purgeDataset(getIdentityId(), datasetName);
+            callback.onSuccess(DefaultDataset.this, Collections.<Record> emptyList());
+            return true;
+        } catch (DataStorageException dse) {
+            callback.onFailure(dse);
+            return false;
+        }
+    }
+
+    /**
+     * Performs the merge callback, and resumes or cancels depending on the
+     * response
+     * 
+     * @param callback the SyncCallback
+     * @param datasetUpdates The current updates from the remote
+     * @param retry The current retry count
+     * @return If the synchronization succeeded
+     */
+    boolean handleDatasetMerge(final SyncCallback callback,
+            final DatasetUpdates datasetUpdates, int retry) {
+        boolean resume = callback.onDatasetsMerged(DefaultDataset.this,
+                new ArrayList<String>(datasetUpdates.getMergedDatasetNameList()));
+        if (resume) {
+            return synchronizeInternal(callback, --retry);
+        } else {
+            callback.onFailure(new DataStorageException("Manual cancel"));
+            return false;
+        }
+    }
+
+    /**
+     * Deletes and purges the local dataset if the client wants to continue the
+     * synchronization upon the remote dataset being deleted, and calls
+     * appropriate callbacks
+     * 
+     * @param callback the SyncCallback
+     * @param datasetUpdates The updates from the remote
+     * @return The result of the client onDatasetDeleted callback
+     */
+    boolean removeLocalDataset(final SyncCallback callback,
+            final DatasetUpdates datasetUpdates) {
+        boolean resume = callback
+                .onDatasetDeleted(DefaultDataset.this, datasetUpdates.getDatasetName());
+        if (resume) {
+            // remove both records and metadata
+            local.deleteDataset(getIdentityId(), datasetName);
+            local.purgeDataset(getIdentityId(), datasetName);
+            callback.onSuccess(DefaultDataset.this, Collections.<Record> emptyList());
+            return true;
+        } else {
+            callback.onFailure(new DataStorageException("Manual cancel"));
+            return false;
+        }
+    }
+
+    /**
+     * Handles remote records (if there are any) by A. Handling conflicts B.
+     * Updating the local store with new remote records C. Updating the local
+     * sync count
+     * 
+     * @param callback
+     * @param datasetUpdates
+     * @return True, unless the developer does not want to continue syncing upon
+     *         a sync conflict
+     */
+    boolean handleRemoteRecords(final SyncCallback callback,
+            final DatasetUpdates datasetUpdates) {
+        List<Record> remoteRecords = datasetUpdates.getRecords();
+
+        if (!remoteRecords.isEmpty()) {
+
+            // if conflict, prompt developer/user with callback
+            List<SyncConflict> conflicts = new ArrayList<SyncConflict>();
+            Iterator<Record> iter = remoteRecords.iterator();
+            while (iter.hasNext()) {
+                Record remoteRecord = iter.next();
+                Record localRecord = local.getRecord(getIdentityId(),
+                        datasetName,
+                        remoteRecord.getKey());
+                // only when local is changed and its value is different
+                if (localRecord != null && localRecord.isModified()
+                        && localRecord.getSyncCount() != remoteRecord.getSyncCount()
+                        && !StringUtils.equals(localRecord.getValue(), remoteRecord.getValue())) {
+                    conflicts.add(new SyncConflict(remoteRecord, localRecord));
+                    // remove it from remote changes, it has been marked as a
+                    // conflict
+                    // and will be updated by conflict resolution
+                    iter.remove();
+                }
+            }
+            if (!conflicts.isEmpty()) {
+                Log.i(TAG, String.format("%d records in conflict!", conflicts.size()));
+                if (!callback.onConflict(DefaultDataset.this, conflicts)) {
+                    // if they didn't want to continue on resolving conflicts
+                    // return
+                    return false;
+                }
+            }
+
+            // if there are non-conflicting records from the remote, update them
+            // in local
+            if (!remoteRecords.isEmpty()) {
+                Log.i(TAG, String.format("save %d records to local", remoteRecords.size()));
+                local.putRecords(getIdentityId(), datasetName, remoteRecords);
+            }
+            // new last sync count
+            Log.i(TAG, String.format("updated sync count %d", datasetUpdates.getSyncCount()));
+            local.updateLastSyncCount(getIdentityId(), datasetName,
+                    datasetUpdates.getSyncCount());
+        }
+
+        return true;
+    }
+
+    /**
+     * Handles local modifications by: A. Pushing local changes to remote B.
+     * Putting the result of the remote push to the local store C. Updating the
+     * last sync count
+     * 
+     * @param callback the SyncCallback
+     * @param datasetUpdates The updates from the remote store
+     * @param retry The current retry count
+     * @return If this portion of the synchronization was successful
+     */
+    boolean handleLocalModifications(final SyncCallback callback,
+            final DatasetUpdates datasetUpdates, int retry) {
+
+        // push changes to remote
+        List<Record> localChanges = getModifiedRecords();
+
+        if (!localChanges.isEmpty()) {
+
+            long lastSyncCount = datasetUpdates.getSyncCount();
+
+            long maxPatchSyncCount = 0;
+            for (Record record : localChanges) {
+                if (record.getSyncCount() > maxPatchSyncCount) {
+                    maxPatchSyncCount = record.getSyncCount();
+                }
+            }
+
+            Log.i(TAG, String.format("push %d records to remote", localChanges.size()));
+            List<Record> result = null;
+            try {
+                SharedPreferences sp = getSharedPreferences();
+                String deviceId = sp.getString(namespaceIdPlatform("deviceId"), null);
+                result = remote.putRecords(datasetName, localChanges,
+                        datasetUpdates.getSyncSessionToken(), deviceId);
+            } catch (DataConflictException dce) {
+                Log.i(TAG, "conflicts detected when pushing changes to remote.");
+                if (lastSyncCount > maxPatchSyncCount) {
+                    local.updateLastSyncCount(getIdentityId(), datasetName, maxPatchSyncCount);
+                }
+                return synchronizeInternal(callback, --retry);
+            } catch (DataStorageException dse) {
+                callback.onFailure(dse);
+                return false;
+            }
+
+            // update local meta data
+            local.conditionallyPutRecords(getIdentityId(), datasetName, result, localChanges);
+
+            // verify the server sync count is increased exactly by one, meaning
+            // no
+            // other updates were made during this update.
+            long newSyncCount = 0;
+            for (Record record : result) {
+                newSyncCount = newSyncCount < record.getSyncCount()
+                        ? record.getSyncCount()
+                        : newSyncCount;
+            }
+
+            if (newSyncCount == lastSyncCount + 1) {
+                Log.i(TAG, String.format("updated sync count %d", newSyncCount));
+                local.updateLastSyncCount(getIdentityId(), datasetName,
+                        newSyncCount);
+            }
+        }
+
+        // call back
+        callback.onSuccess(DefaultDataset.this, datasetUpdates.getRecords());
+        return true;
+    }
+
+    /**
      * Internal method for synchronization.
      * 
      * @param callback callback during synchronization
@@ -171,7 +369,8 @@ class DefaultDataset implements Dataset {
     synchronized boolean synchronizeInternal(final SyncCallback callback, int retry) {
         if (retry < 0) {
             Log.e(TAG, "Synchronize failed because it exceeded the maximum retries");
-            callback.onFailure(new DataStorageException("Synchronize failed because it exceeded the maximum retries"));
+            callback.onFailure(new DataStorageException(
+                    "Synchronize failed because it exceeded the maximum retries"));
             return false;
         }
 
@@ -179,19 +378,7 @@ class DefaultDataset implements Dataset {
 
         // if dataset is deleted locally, push it to remote
         if (lastSyncCount == -1) {
-            try {
-                try {
-                    remote.deleteDataset(datasetName);
-                } catch(DatasetNotFoundException e) {
-                    //This exception will fire if this was a local-only dataset and should be ignored
-                }
-                local.purgeDataset(getIdentityId(), datasetName);
-                callback.onSuccess(DefaultDataset.this, Collections.<Record> emptyList());
-                return true;
-            } catch (DataStorageException dse) {
-                callback.onFailure(dse);
-                return false;
-            }
+            return deleteLocalAndPurgeRemoteDataset(callback);
         }
 
         // get latest modified records from remote
@@ -205,123 +392,20 @@ class DefaultDataset implements Dataset {
         }
 
         if (!datasetUpdates.getMergedDatasetNameList().isEmpty()) {
-            boolean resume = callback.onDatasetsMerged(DefaultDataset.this,
-                    new ArrayList<String>(datasetUpdates.getMergedDatasetNameList()));
-            if (resume) {
-                return synchronizeInternal(callback, --retry);
-            } else {
-                callback.onFailure(new DataStorageException("Manual cancel"));
-                return false;
-            }
+            return handleDatasetMerge(callback, datasetUpdates, retry);
         }
 
         // if the dataset doesn't exist or is deleted, trigger onDelete
         if (lastSyncCount != 0 && !datasetUpdates.isExists()
                 || datasetUpdates.isDeleted()) {
-            boolean resume = callback
-                    .onDatasetDeleted(DefaultDataset.this, datasetUpdates.getDatasetName());
-            if (resume) {
-                // remove both records and metadata
-                local.deleteDataset(getIdentityId(), datasetName);
-                local.purgeDataset(getIdentityId(), datasetName);
-                callback.onSuccess(DefaultDataset.this, Collections.<Record> emptyList());
-                return true;
-            } else {
-                callback.onFailure(new DataStorageException("Manual cancel"));
-                return false;
-            }
+            return removeLocalDataset(callback, datasetUpdates);
         }
 
-        List<Record> remoteRecords = datasetUpdates.getRecords();
-        lastSyncCount = datasetUpdates.getSyncCount();
-        
-        if (!remoteRecords.isEmpty()) {
-            // if conflict, prompt developer/user with callback
-            List<SyncConflict> conflicts = new ArrayList<SyncConflict>();
-            Iterator<Record> iter = remoteRecords.iterator();
-            while(iter.hasNext()){
-            	Record remoteRecord = iter.next();
-                Record localRecord = local.getRecord(getIdentityId(),
-                        datasetName,
-                        remoteRecord.getKey());
-                // only when local is changed and its value is different
-                if (localRecord != null && localRecord.isModified() 
-                        && localRecord.getSyncCount() != remoteRecord.getSyncCount()
-                        && !StringUtils.equals(localRecord.getValue(), remoteRecord.getValue())) {
-                	conflicts.add(new SyncConflict(remoteRecord, localRecord));
-                	//remove it from remote changes, it has been marked as a conflict
-                	//and will be updated by conflict resolution
-                	iter.remove();
-                }
-            }
-            if (!conflicts.isEmpty()) {
-                Log.i(TAG, String.format("%d records in conflict!", conflicts.size()));
-                if(!callback.onConflict(DefaultDataset.this, conflicts)){
-                	//if they didn't want to continue on resolving conflicts return
-                	return false;
-                }
-            }
-
-            // if there are non-conflicting records from the remote, update them in local
-            if(!remoteRecords.isEmpty()){
-            	Log.i(TAG, String.format("save %d records to local", remoteRecords.size()));
-            	local.putRecords(getIdentityId(), datasetName, remoteRecords);
-            }
-
-            // new last sync count
-            Log.i(TAG, String.format("updated sync count %d", datasetUpdates.getSyncCount()));
-            local.updateLastSyncCount(getIdentityId(), datasetName,
-                    datasetUpdates.getSyncCount());
+        if (!handleRemoteRecords(callback, datasetUpdates)) {
+            return false;
         }
 
-        // push changes to remote
-        List<Record> localChanges = getModifiedRecords();
-        long maxPatchSyncCount = 0;
-        for(Record record : localChanges){
-            if(record.getSyncCount() > maxPatchSyncCount){
-                maxPatchSyncCount = record.getSyncCount();
-            }
-        }
-        if (!localChanges.isEmpty()) {
-            Log.i(TAG, String.format("push %d records to remote", localChanges.size()));
-            List<Record> result = null;
-            try {
-                SharedPreferences sp = getSharedPreferences();
-                String deviceId = sp.getString("deviceId", null);
-                result = remote.putRecords(datasetName, localChanges,
-                        datasetUpdates.getSyncSessionToken(), deviceId);
-            } catch (DataConflictException dce) {
-                Log.i(TAG, "conflicts detected when pushing changes to remote.");
-                if(lastSyncCount > maxPatchSyncCount){
-                    local.updateLastSyncCount(getIdentityId(), datasetName, maxPatchSyncCount);
-                }
-                return synchronizeInternal(callback, --retry);
-            } catch (DataStorageException dse) {
-                callback.onFailure(dse);
-                return false;
-            }
-
-            // update local meta data
-            local.conditionallyPutRecords(getIdentityId(), datasetName, result, localChanges);
-
-            // verify the server sync count is increased exactly by one, meaning no
-            // other updates were made during this update.
-            long newSyncCount = 0;
-            for (Record record : result) {
-                newSyncCount = newSyncCount < record.getSyncCount()
-                        ? record.getSyncCount()
-                        : newSyncCount;
-            }
-            if (newSyncCount == lastSyncCount + 1) {
-                Log.i(TAG, String.format("updated sync count %d", newSyncCount));
-                local.updateLastSyncCount(getIdentityId(), datasetName,
-                        newSyncCount);
-            }
-        }
-
-        // call back
-        callback.onSuccess(DefaultDataset.this, remoteRecords);
-        return true;
+        return handleLocalModifications(callback, datasetUpdates, retry);
     }
 
     @Override
@@ -504,7 +588,7 @@ class DefaultDataset implements Dataset {
 
     @Override
     public void unsubscribe() {
-        String deviceId = getSharedPreferences().getString("deviceId", "");
+        String deviceId = getSharedPreferences().getString(namespaceIdPlatform("deviceId"), "");
         if (deviceId.isEmpty()) {
             throw new IllegalStateException("Device hasn't been registered yet");
         }
@@ -513,7 +597,7 @@ class DefaultDataset implements Dataset {
 
     @Override
     public void subscribe() {
-        String deviceId = getSharedPreferences().getString("deviceId", "");
+        String deviceId = getSharedPreferences().getString(namespaceIdPlatform("deviceId"), "");
         if (deviceId.isEmpty()) {
             throw new IllegalStateException("Device hasn't been registered yet");
         }
@@ -523,5 +607,19 @@ class DefaultDataset implements Dataset {
     private SharedPreferences getSharedPreferences() {
         return context.getSharedPreferences("com.amazonaws.mobileconnectors.cognito",
                 Context.MODE_PRIVATE);
+    }
+    
+    // prefix the key with identity id and platform
+    String namespaceIdPlatform(String key) {
+        String platform = getSharedPreferences().getString(namespaceId("platform"), "");
+        return namespaceId(platform) + "." + key;
+    }
+    
+    // prefix the name with the cached identity id
+    String namespaceId(String key) {
+        // This is always called by something requiring a separate thread, the get
+        // id call checks the cache first, and it's called in sync after pulling from 
+        // remote (which would require an id). As a result, we use get id, not the cache.
+        return provider.getIdentityId() + "." + key;
     }
 }
