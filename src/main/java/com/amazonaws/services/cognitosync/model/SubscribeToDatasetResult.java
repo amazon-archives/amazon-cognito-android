@@ -17,7 +17,9 @@ package com.amazonaws.services.cognitosync.model;
 import java.io.Serializable;
 
 /**
- * Subscribe To Dataset Result
+ * <p>
+ * Response to a SubscribeToDataset request.
+ * </p>
  */
 public class SubscribeToDatasetResult implements Serializable {
 

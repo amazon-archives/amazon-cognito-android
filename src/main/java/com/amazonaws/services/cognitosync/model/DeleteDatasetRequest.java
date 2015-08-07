@@ -20,46 +20,91 @@ import com.amazonaws.AmazonWebServiceRequest;
 
 /**
  * Container for the parameters to the {@link com.amazonaws.services.cognitosync.AmazonCognitoSync#deleteDataset(DeleteDatasetRequest) DeleteDataset operation}.
- * 
+ * <p>
+ * Deletes the specific dataset. The dataset will be deleted permanently,
+ * and the action can't be undone. Datasets that this dataset was merged
+ * with will no longer report the merge. Any subsequent operation on this
+ * dataset will result in a ResourceNotFoundException.
+ * </p>
+ * <p>
+ * This API can be called with temporary user credentials provided by
+ * Cognito Identity or with developer credentials.
+ * </p>
  *
  * @see com.amazonaws.services.cognitosync.AmazonCognitoSync#deleteDataset(DeleteDatasetRequest)
  */
 public class DeleteDatasetRequest extends AmazonWebServiceRequest implements Serializable {
 
+    /**
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>1 - 50<br/>
+     * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
+     */
     private String identityPoolId;
 
+    /**
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>1 - 50<br/>
+     * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
+     */
     private String identityId;
 
+    /**
+     * A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     * 0-9, '_' (underscore), '-' (dash), and '.' (dot).
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>1 - 128<br/>
+     * <b>Pattern: </b>[a-zA-Z0-9_.:-]+<br/>
+     */
     private String datasetName;
 
     /**
-     * Returns the value of the IdentityPoolId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @return The value of the IdentityPoolId property for this object.
+     * @return A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      */
     public String getIdentityPoolId() {
         return identityPoolId;
     }
     
     /**
-     * Sets the value of the IdentityPoolId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityPoolId The new value for the IdentityPoolId property for this object.
+     * @param identityPoolId A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      */
     public void setIdentityPoolId(String identityPoolId) {
         this.identityPoolId = identityPoolId;
     }
     
     /**
-     * Sets the value of the IdentityPoolId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
@@ -67,7 +112,9 @@ public class DeleteDatasetRequest extends AmazonWebServiceRequest implements Ser
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityPoolId The new value for the IdentityPoolId property for this object.
+     * @param identityPoolId A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -78,33 +125,43 @@ public class DeleteDatasetRequest extends AmazonWebServiceRequest implements Ser
     }
 
     /**
-     * Returns the value of the IdentityId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @return The value of the IdentityId property for this object.
+     * @return A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      */
     public String getIdentityId() {
         return identityId;
     }
     
     /**
-     * Sets the value of the IdentityId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityId The new value for the IdentityId property for this object.
+     * @param identityId A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      */
     public void setIdentityId(String identityId) {
         this.identityId = identityId;
     }
     
     /**
-     * Sets the value of the IdentityId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
@@ -112,7 +169,9 @@ public class DeleteDatasetRequest extends AmazonWebServiceRequest implements Ser
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityId The new value for the IdentityId property for this object.
+     * @param identityId A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -123,33 +182,38 @@ public class DeleteDatasetRequest extends AmazonWebServiceRequest implements Ser
     }
 
     /**
-     * Returns the value of the DatasetName property for this object.
+     * A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     * 0-9, '_' (underscore), '-' (dash), and '.' (dot).
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 128<br/>
      * <b>Pattern: </b>[a-zA-Z0-9_.:-]+<br/>
      *
-     * @return The value of the DatasetName property for this object.
+     * @return A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     *         0-9, '_' (underscore), '-' (dash), and '.' (dot).
      */
     public String getDatasetName() {
         return datasetName;
     }
     
     /**
-     * Sets the value of the DatasetName property for this object.
+     * A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     * 0-9, '_' (underscore), '-' (dash), and '.' (dot).
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 128<br/>
      * <b>Pattern: </b>[a-zA-Z0-9_.:-]+<br/>
      *
-     * @param datasetName The new value for the DatasetName property for this object.
+     * @param datasetName A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     *         0-9, '_' (underscore), '-' (dash), and '.' (dot).
      */
     public void setDatasetName(String datasetName) {
         this.datasetName = datasetName;
     }
     
     /**
-     * Sets the value of the DatasetName property for this object.
+     * A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     * 0-9, '_' (underscore), '-' (dash), and '.' (dot).
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
@@ -157,7 +221,8 @@ public class DeleteDatasetRequest extends AmazonWebServiceRequest implements Ser
      * <b>Length: </b>1 - 128<br/>
      * <b>Pattern: </b>[a-zA-Z0-9_.:-]+<br/>
      *
-     * @param datasetName The new value for the DatasetName property for this object.
+     * @param datasetName A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     *         0-9, '_' (underscore), '-' (dash), and '.' (dot).
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.

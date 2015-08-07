@@ -20,54 +20,130 @@ import com.amazonaws.AmazonWebServiceRequest;
 
 /**
  * Container for the parameters to the {@link com.amazonaws.services.cognitosync.AmazonCognitoSync#updateRecords(UpdateRecordsRequest) UpdateRecords operation}.
- * 
+ * <p>
+ * Posts updates to records and adds and deletes records for a dataset
+ * and user.
+ * </p>
+ * <p>
+ * The sync count in the record patch is your last known sync count for
+ * that record. The server will reject an UpdateRecords request with a
+ * ResourceConflictException if you try to patch a record with a new
+ * value but a stale sync count.
+ * </p>
+ * <p>
+ * For example, if the sync count on the server is 5 for a key called
+ * highScore and you try and submit a new highScore with sync count of 4,
+ * the request will be rejected. To obtain the current sync count for a
+ * record, call ListRecords. On a successful update of the record, the
+ * response returns the new sync count for that record. You should
+ * present that sync count the next time you try to update that same
+ * record. When the record does not exist, specify the sync count as 0.
+ * </p>
+ * <p>
+ * This API can be called with temporary user credentials provided by
+ * Cognito Identity or with developer credentials.
+ * </p>
  *
  * @see com.amazonaws.services.cognitosync.AmazonCognitoSync#updateRecords(UpdateRecordsRequest)
  */
 public class UpdateRecordsRequest extends AmazonWebServiceRequest implements Serializable {
 
+    /**
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>1 - 50<br/>
+     * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
+     */
     private String identityPoolId;
 
+    /**
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>1 - 50<br/>
+     * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
+     */
     private String identityId;
 
+    /**
+     * A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     * 0-9, '_' (underscore), '-' (dash), and '.' (dot).
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>1 - 128<br/>
+     * <b>Pattern: </b>[a-zA-Z0-9_.:-]+<br/>
+     */
     private String datasetName;
 
+    /**
+     * The unique ID generated for this device by Cognito.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>1 - 256<br/>
+     */
     private String deviceId;
 
+    /**
+     * A list of patch operations.
+     */
     private com.amazonaws.internal.ListWithAutoConstructFlag<RecordPatch> recordPatches;
 
+    /**
+     * The SyncSessionToken returned by a previous call to ListRecords for
+     * this dataset and identity.
+     */
     private String syncSessionToken;
 
+    /**
+     * Intended to supply a device ID that will populate the lastModifiedBy
+     * field referenced in other methods. The ClientContext field is not yet
+     * implemented.
+     */
     private String clientContext;
 
     /**
-     * Returns the value of the IdentityPoolId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @return The value of the IdentityPoolId property for this object.
+     * @return A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      */
     public String getIdentityPoolId() {
         return identityPoolId;
     }
     
     /**
-     * Sets the value of the IdentityPoolId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityPoolId The new value for the IdentityPoolId property for this object.
+     * @param identityPoolId A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      */
     public void setIdentityPoolId(String identityPoolId) {
         this.identityPoolId = identityPoolId;
     }
     
     /**
-     * Sets the value of the IdentityPoolId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
@@ -75,7 +151,9 @@ public class UpdateRecordsRequest extends AmazonWebServiceRequest implements Ser
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityPoolId The new value for the IdentityPoolId property for this object.
+     * @param identityPoolId A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -86,33 +164,43 @@ public class UpdateRecordsRequest extends AmazonWebServiceRequest implements Ser
     }
 
     /**
-     * Returns the value of the IdentityId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @return The value of the IdentityId property for this object.
+     * @return A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      */
     public String getIdentityId() {
         return identityId;
     }
     
     /**
-     * Sets the value of the IdentityId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityId The new value for the IdentityId property for this object.
+     * @param identityId A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      */
     public void setIdentityId(String identityId) {
         this.identityId = identityId;
     }
     
     /**
-     * Sets the value of the IdentityId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
@@ -120,7 +208,9 @@ public class UpdateRecordsRequest extends AmazonWebServiceRequest implements Ser
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityId The new value for the IdentityId property for this object.
+     * @param identityId A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -131,33 +221,38 @@ public class UpdateRecordsRequest extends AmazonWebServiceRequest implements Ser
     }
 
     /**
-     * Returns the value of the DatasetName property for this object.
+     * A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     * 0-9, '_' (underscore), '-' (dash), and '.' (dot).
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 128<br/>
      * <b>Pattern: </b>[a-zA-Z0-9_.:-]+<br/>
      *
-     * @return The value of the DatasetName property for this object.
+     * @return A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     *         0-9, '_' (underscore), '-' (dash), and '.' (dot).
      */
     public String getDatasetName() {
         return datasetName;
     }
     
     /**
-     * Sets the value of the DatasetName property for this object.
+     * A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     * 0-9, '_' (underscore), '-' (dash), and '.' (dot).
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 128<br/>
      * <b>Pattern: </b>[a-zA-Z0-9_.:-]+<br/>
      *
-     * @param datasetName The new value for the DatasetName property for this object.
+     * @param datasetName A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     *         0-9, '_' (underscore), '-' (dash), and '.' (dot).
      */
     public void setDatasetName(String datasetName) {
         this.datasetName = datasetName;
     }
     
     /**
-     * Sets the value of the DatasetName property for this object.
+     * A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     * 0-9, '_' (underscore), '-' (dash), and '.' (dot).
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
@@ -165,7 +260,8 @@ public class UpdateRecordsRequest extends AmazonWebServiceRequest implements Ser
      * <b>Length: </b>1 - 128<br/>
      * <b>Pattern: </b>[a-zA-Z0-9_.:-]+<br/>
      *
-     * @param datasetName The new value for the DatasetName property for this object.
+     * @param datasetName A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     *         0-9, '_' (underscore), '-' (dash), and '.' (dot).
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -176,38 +272,38 @@ public class UpdateRecordsRequest extends AmazonWebServiceRequest implements Ser
     }
 
     /**
-     * Returns the value of the DeviceId property for this object.
+     * The unique ID generated for this device by Cognito.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 256<br/>
      *
-     * @return The value of the DeviceId property for this object.
+     * @return The unique ID generated for this device by Cognito.
      */
     public String getDeviceId() {
         return deviceId;
     }
     
     /**
-     * Sets the value of the DeviceId property for this object.
+     * The unique ID generated for this device by Cognito.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 256<br/>
      *
-     * @param deviceId The new value for the DeviceId property for this object.
+     * @param deviceId The unique ID generated for this device by Cognito.
      */
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
     }
     
     /**
-     * Sets the value of the DeviceId property for this object.
+     * The unique ID generated for this device by Cognito.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 256<br/>
      *
-     * @param deviceId The new value for the DeviceId property for this object.
+     * @param deviceId The unique ID generated for this device by Cognito.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -218,9 +314,9 @@ public class UpdateRecordsRequest extends AmazonWebServiceRequest implements Ser
     }
 
     /**
-     * Returns the value of the RecordPatches property for this object.
+     * A list of patch operations.
      *
-     * @return The value of the RecordPatches property for this object.
+     * @return A list of patch operations.
      */
     public java.util.List<RecordPatch> getRecordPatches() {
         if (recordPatches == null) {
@@ -231,9 +327,9 @@ public class UpdateRecordsRequest extends AmazonWebServiceRequest implements Ser
     }
     
     /**
-     * Sets the value of the RecordPatches property for this object.
+     * A list of patch operations.
      *
-     * @param recordPatches The new value for the RecordPatches property for this object.
+     * @param recordPatches A list of patch operations.
      */
     public void setRecordPatches(java.util.Collection<RecordPatch> recordPatches) {
         if (recordPatches == null) {
@@ -246,11 +342,11 @@ public class UpdateRecordsRequest extends AmazonWebServiceRequest implements Ser
     }
     
     /**
-     * Sets the value of the RecordPatches property for this object.
+     * A list of patch operations.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param recordPatches The new value for the RecordPatches property for this object.
+     * @param recordPatches A list of patch operations.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -264,11 +360,11 @@ public class UpdateRecordsRequest extends AmazonWebServiceRequest implements Ser
     }
     
     /**
-     * Sets the value of the RecordPatches property for this object.
+     * A list of patch operations.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param recordPatches The new value for the RecordPatches property for this object.
+     * @param recordPatches A list of patch operations.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -286,29 +382,35 @@ public class UpdateRecordsRequest extends AmazonWebServiceRequest implements Ser
     }
 
     /**
-     * Returns the value of the SyncSessionToken property for this object.
+     * The SyncSessionToken returned by a previous call to ListRecords for
+     * this dataset and identity.
      *
-     * @return The value of the SyncSessionToken property for this object.
+     * @return The SyncSessionToken returned by a previous call to ListRecords for
+     *         this dataset and identity.
      */
     public String getSyncSessionToken() {
         return syncSessionToken;
     }
     
     /**
-     * Sets the value of the SyncSessionToken property for this object.
+     * The SyncSessionToken returned by a previous call to ListRecords for
+     * this dataset and identity.
      *
-     * @param syncSessionToken The new value for the SyncSessionToken property for this object.
+     * @param syncSessionToken The SyncSessionToken returned by a previous call to ListRecords for
+     *         this dataset and identity.
      */
     public void setSyncSessionToken(String syncSessionToken) {
         this.syncSessionToken = syncSessionToken;
     }
     
     /**
-     * Sets the value of the SyncSessionToken property for this object.
+     * The SyncSessionToken returned by a previous call to ListRecords for
+     * this dataset and identity.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param syncSessionToken The new value for the SyncSessionToken property for this object.
+     * @param syncSessionToken The SyncSessionToken returned by a previous call to ListRecords for
+     *         this dataset and identity.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -319,29 +421,41 @@ public class UpdateRecordsRequest extends AmazonWebServiceRequest implements Ser
     }
 
     /**
-     * Returns the value of the ClientContext property for this object.
+     * Intended to supply a device ID that will populate the lastModifiedBy
+     * field referenced in other methods. The ClientContext field is not yet
+     * implemented.
      *
-     * @return The value of the ClientContext property for this object.
+     * @return Intended to supply a device ID that will populate the lastModifiedBy
+     *         field referenced in other methods. The ClientContext field is not yet
+     *         implemented.
      */
     public String getClientContext() {
         return clientContext;
     }
     
     /**
-     * Sets the value of the ClientContext property for this object.
+     * Intended to supply a device ID that will populate the lastModifiedBy
+     * field referenced in other methods. The ClientContext field is not yet
+     * implemented.
      *
-     * @param clientContext The new value for the ClientContext property for this object.
+     * @param clientContext Intended to supply a device ID that will populate the lastModifiedBy
+     *         field referenced in other methods. The ClientContext field is not yet
+     *         implemented.
      */
     public void setClientContext(String clientContext) {
         this.clientContext = clientContext;
     }
     
     /**
-     * Sets the value of the ClientContext property for this object.
+     * Intended to supply a device ID that will populate the lastModifiedBy
+     * field referenced in other methods. The ClientContext field is not yet
+     * implemented.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param clientContext The new value for the ClientContext property for this object.
+     * @param clientContext Intended to supply a device ID that will populate the lastModifiedBy
+     *         field referenced in other methods. The ClientContext field is not yet
+     *         implemented.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.

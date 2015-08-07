@@ -17,36 +17,76 @@ package com.amazonaws.services.cognitosync.model;
 import java.io.Serializable;
 
 /**
- * Delete Dataset Result
+ * <p>
+ * Response to a successful DeleteDataset request.
+ * </p>
  */
 public class DeleteDatasetResult implements Serializable {
 
+    /**
+     * A collection of data for an identity pool. An identity pool can have
+     * multiple datasets. A dataset is per identity and can be general or
+     * associated with a particular entity in an application (like a saved
+     * game). Datasets are automatically created if they don't exist. Data is
+     * synced by dataset, and a dataset can hold up to 1MB of key-value
+     * pairs.
+     */
     private Dataset dataset;
 
     /**
-     * Returns the value of the Dataset property for this object.
+     * A collection of data for an identity pool. An identity pool can have
+     * multiple datasets. A dataset is per identity and can be general or
+     * associated with a particular entity in an application (like a saved
+     * game). Datasets are automatically created if they don't exist. Data is
+     * synced by dataset, and a dataset can hold up to 1MB of key-value
+     * pairs.
      *
-     * @return The value of the Dataset property for this object.
+     * @return A collection of data for an identity pool. An identity pool can have
+     *         multiple datasets. A dataset is per identity and can be general or
+     *         associated with a particular entity in an application (like a saved
+     *         game). Datasets are automatically created if they don't exist. Data is
+     *         synced by dataset, and a dataset can hold up to 1MB of key-value
+     *         pairs.
      */
     public Dataset getDataset() {
         return dataset;
     }
     
     /**
-     * Sets the value of the Dataset property for this object.
+     * A collection of data for an identity pool. An identity pool can have
+     * multiple datasets. A dataset is per identity and can be general or
+     * associated with a particular entity in an application (like a saved
+     * game). Datasets are automatically created if they don't exist. Data is
+     * synced by dataset, and a dataset can hold up to 1MB of key-value
+     * pairs.
      *
-     * @param dataset The new value for the Dataset property for this object.
+     * @param dataset A collection of data for an identity pool. An identity pool can have
+     *         multiple datasets. A dataset is per identity and can be general or
+     *         associated with a particular entity in an application (like a saved
+     *         game). Datasets are automatically created if they don't exist. Data is
+     *         synced by dataset, and a dataset can hold up to 1MB of key-value
+     *         pairs.
      */
     public void setDataset(Dataset dataset) {
         this.dataset = dataset;
     }
     
     /**
-     * Sets the value of the Dataset property for this object.
+     * A collection of data for an identity pool. An identity pool can have
+     * multiple datasets. A dataset is per identity and can be general or
+     * associated with a particular entity in an application (like a saved
+     * game). Datasets are automatically created if they don't exist. Data is
+     * synced by dataset, and a dataset can hold up to 1MB of key-value
+     * pairs.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param dataset The new value for the Dataset property for this object.
+     * @param dataset A collection of data for an identity pool. An identity pool can have
+     *         multiple datasets. A dataset is per identity and can be general or
+     *         associated with a particular entity in an application (like a saved
+     *         game). Datasets are automatically created if they don't exist. Data is
+     *         synced by dataset, and a dataset can hold up to 1MB of key-value
+     *         pairs.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.

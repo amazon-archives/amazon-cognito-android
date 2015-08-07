@@ -20,48 +20,89 @@ import com.amazonaws.AmazonWebServiceRequest;
 
 /**
  * Container for the parameters to the {@link com.amazonaws.services.cognitosync.AmazonCognitoSync#registerDevice(RegisterDeviceRequest) RegisterDevice operation}.
- * 
+ * <p>
+ * Registers a device to receive push sync notifications.
+ * </p>
+ * <p>
+ * This API can only be called with temporary credentials provided by
+ * Cognito Identity. You cannot call this API with developer credentials.
+ * </p>
  *
  * @see com.amazonaws.services.cognitosync.AmazonCognitoSync#registerDevice(RegisterDeviceRequest)
  */
 public class RegisterDeviceRequest extends AmazonWebServiceRequest implements Serializable {
 
+    /**
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. Here, the ID of the pool that the identity belongs to.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>1 - 50<br/>
+     * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
+     */
     private String identityPoolId;
 
+    /**
+     * The unique ID for this identity.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>1 - 50<br/>
+     * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
+     */
     private String identityId;
 
+    /**
+     * The SNS platform type (e.g. GCM, SDM, APNS, APNS_SANDBOX).
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Allowed Values: </b>APNS, APNS_SANDBOX, GCM, ADM
+     */
     private String platform;
 
+    /**
+     * The push token.
+     */
     private String token;
 
     /**
-     * Returns the value of the IdentityPoolId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. Here, the ID of the pool that the identity belongs to.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @return The value of the IdentityPoolId property for this object.
+     * @return A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. Here, the ID of the pool that the identity belongs to.
      */
     public String getIdentityPoolId() {
         return identityPoolId;
     }
     
     /**
-     * Sets the value of the IdentityPoolId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. Here, the ID of the pool that the identity belongs to.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityPoolId The new value for the IdentityPoolId property for this object.
+     * @param identityPoolId A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. Here, the ID of the pool that the identity belongs to.
      */
     public void setIdentityPoolId(String identityPoolId) {
         this.identityPoolId = identityPoolId;
     }
     
     /**
-     * Sets the value of the IdentityPoolId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. Here, the ID of the pool that the identity belongs to.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
@@ -69,7 +110,9 @@ public class RegisterDeviceRequest extends AmazonWebServiceRequest implements Se
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityPoolId The new value for the IdentityPoolId property for this object.
+     * @param identityPoolId A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. Here, the ID of the pool that the identity belongs to.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -80,33 +123,33 @@ public class RegisterDeviceRequest extends AmazonWebServiceRequest implements Se
     }
 
     /**
-     * Returns the value of the IdentityId property for this object.
+     * The unique ID for this identity.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @return The value of the IdentityId property for this object.
+     * @return The unique ID for this identity.
      */
     public String getIdentityId() {
         return identityId;
     }
     
     /**
-     * Sets the value of the IdentityId property for this object.
+     * The unique ID for this identity.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityId The new value for the IdentityId property for this object.
+     * @param identityId The unique ID for this identity.
      */
     public void setIdentityId(String identityId) {
         this.identityId = identityId;
     }
     
     /**
-     * Sets the value of the IdentityId property for this object.
+     * The unique ID for this identity.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
@@ -114,7 +157,7 @@ public class RegisterDeviceRequest extends AmazonWebServiceRequest implements Se
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityId The new value for the IdentityId property for this object.
+     * @param identityId The unique ID for this identity.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -125,12 +168,12 @@ public class RegisterDeviceRequest extends AmazonWebServiceRequest implements Se
     }
 
     /**
-     * Returns the value of the Platform property for this object.
+     * The SNS platform type (e.g. GCM, SDM, APNS, APNS_SANDBOX).
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Allowed Values: </b>APNS, APNS_SANDBOX, GCM, ADM
      *
-     * @return The value of the Platform property for this object.
+     * @return The SNS platform type (e.g. GCM, SDM, APNS, APNS_SANDBOX).
      *
      * @see Platform
      */
@@ -139,12 +182,12 @@ public class RegisterDeviceRequest extends AmazonWebServiceRequest implements Se
     }
     
     /**
-     * Sets the value of the Platform property for this object.
+     * The SNS platform type (e.g. GCM, SDM, APNS, APNS_SANDBOX).
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Allowed Values: </b>APNS, APNS_SANDBOX, GCM, ADM
      *
-     * @param platform The new value for the Platform property for this object.
+     * @param platform The SNS platform type (e.g. GCM, SDM, APNS, APNS_SANDBOX).
      *
      * @see Platform
      */
@@ -153,14 +196,14 @@ public class RegisterDeviceRequest extends AmazonWebServiceRequest implements Se
     }
     
     /**
-     * Sets the value of the Platform property for this object.
+     * The SNS platform type (e.g. GCM, SDM, APNS, APNS_SANDBOX).
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Allowed Values: </b>APNS, APNS_SANDBOX, GCM, ADM
      *
-     * @param platform The new value for the Platform property for this object.
+     * @param platform The SNS platform type (e.g. GCM, SDM, APNS, APNS_SANDBOX).
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -173,12 +216,12 @@ public class RegisterDeviceRequest extends AmazonWebServiceRequest implements Se
     }
 
     /**
-     * Sets the value of the Platform property for this object.
+     * The SNS platform type (e.g. GCM, SDM, APNS, APNS_SANDBOX).
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Allowed Values: </b>APNS, APNS_SANDBOX, GCM, ADM
      *
-     * @param platform The new value for the Platform property for this object.
+     * @param platform The SNS platform type (e.g. GCM, SDM, APNS, APNS_SANDBOX).
      *
      * @see Platform
      */
@@ -187,14 +230,14 @@ public class RegisterDeviceRequest extends AmazonWebServiceRequest implements Se
     }
     
     /**
-     * Sets the value of the Platform property for this object.
+     * The SNS platform type (e.g. GCM, SDM, APNS, APNS_SANDBOX).
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Allowed Values: </b>APNS, APNS_SANDBOX, GCM, ADM
      *
-     * @param platform The new value for the Platform property for this object.
+     * @param platform The SNS platform type (e.g. GCM, SDM, APNS, APNS_SANDBOX).
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -207,29 +250,29 @@ public class RegisterDeviceRequest extends AmazonWebServiceRequest implements Se
     }
 
     /**
-     * Returns the value of the Token property for this object.
+     * The push token.
      *
-     * @return The value of the Token property for this object.
+     * @return The push token.
      */
     public String getToken() {
         return token;
     }
     
     /**
-     * Sets the value of the Token property for this object.
+     * The push token.
      *
-     * @param token The new value for the Token property for this object.
+     * @param token The push token.
      */
     public void setToken(String token) {
         this.token = token;
     }
     
     /**
-     * Sets the value of the Token property for this object.
+     * The push token.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param token The new value for the Token property for this object.
+     * @param token The push token.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.

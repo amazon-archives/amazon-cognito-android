@@ -17,7 +17,9 @@ package com.amazonaws.services.cognitosync.model;
 import com.amazonaws.AmazonServiceException;
 
 /**
- * AmazonCognitoSync exception
+ * <p>
+ * Thrown if the resource doesn't exist.
+ * </p>
  */        
 public class ResourceNotFoundException extends AmazonServiceException {
     private static final long serialVersionUID = 1L;

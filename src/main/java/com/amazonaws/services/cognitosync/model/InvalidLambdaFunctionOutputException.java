@@ -17,7 +17,9 @@ package com.amazonaws.services.cognitosync.model;
 import com.amazonaws.AmazonServiceException;
 
 /**
- * AmazonCognitoSync exception
+ * <p>
+ * The AWS Lambda function returned invalid output or an exception.
+ * </p>
  */        
 public class InvalidLambdaFunctionOutputException extends AmazonServiceException {
     private static final long serialVersionUID = 1L;

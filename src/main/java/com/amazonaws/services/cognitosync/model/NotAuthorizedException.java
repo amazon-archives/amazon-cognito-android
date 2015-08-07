@@ -17,7 +17,9 @@ package com.amazonaws.services.cognitosync.model;
 import com.amazonaws.AmazonServiceException;
 
 /**
- * AmazonCognitoSync exception
+ * <p>
+ * Thrown when a user is not authorized to access the requested resource.
+ * </p>
  */        
 public class NotAuthorizedException extends AmazonServiceException {
     private static final long serialVersionUID = 1L;

@@ -17,7 +17,10 @@ package com.amazonaws.services.cognitosync.model;
 import com.amazonaws.AmazonServiceException;
 
 /**
- * AmazonCognitoSync exception
+ * <p>
+ * Thrown if an update can't be applied because the resource was changed
+ * by another call and this would result in a conflict.
+ * </p>
  */        
 public class ResourceConflictException extends AmazonServiceException {
     private static final long serialVersionUID = 1L;

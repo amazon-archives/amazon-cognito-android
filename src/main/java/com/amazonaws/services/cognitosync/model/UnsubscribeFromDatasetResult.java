@@ -17,7 +17,9 @@ package com.amazonaws.services.cognitosync.model;
 import java.io.Serializable;
 
 /**
- * Unsubscribe From Dataset Result
+ * <p>
+ * Response to an UnsubscribeFromDataset request.
+ * </p>
  */
 public class UnsubscribeFromDatasetResult implements Serializable {
 

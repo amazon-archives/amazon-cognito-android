@@ -17,20 +17,31 @@ package com.amazonaws.services.cognitosync.model;
 import java.io.Serializable;
 
 /**
- * List Datasets Result
+ * <p>
+ * Returned for a successful ListDatasets request.
+ * </p>
  */
 public class ListDatasetsResult implements Serializable {
 
+    /**
+     * A set of datasets.
+     */
     private com.amazonaws.internal.ListWithAutoConstructFlag<Dataset> datasets;
 
+    /**
+     * Number of datasets returned.
+     */
     private Integer count;
 
+    /**
+     * A pagination token for obtaining the next page of results.
+     */
     private String nextToken;
 
     /**
-     * Returns the value of the Datasets property for this object.
+     * A set of datasets.
      *
-     * @return The value of the Datasets property for this object.
+     * @return A set of datasets.
      */
     public java.util.List<Dataset> getDatasets() {
         if (datasets == null) {
@@ -41,9 +52,9 @@ public class ListDatasetsResult implements Serializable {
     }
     
     /**
-     * Sets the value of the Datasets property for this object.
+     * A set of datasets.
      *
-     * @param datasets The new value for the Datasets property for this object.
+     * @param datasets A set of datasets.
      */
     public void setDatasets(java.util.Collection<Dataset> datasets) {
         if (datasets == null) {
@@ -56,11 +67,11 @@ public class ListDatasetsResult implements Serializable {
     }
     
     /**
-     * Sets the value of the Datasets property for this object.
+     * A set of datasets.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param datasets The new value for the Datasets property for this object.
+     * @param datasets A set of datasets.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -74,11 +85,11 @@ public class ListDatasetsResult implements Serializable {
     }
     
     /**
-     * Sets the value of the Datasets property for this object.
+     * A set of datasets.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param datasets The new value for the Datasets property for this object.
+     * @param datasets A set of datasets.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -96,29 +107,29 @@ public class ListDatasetsResult implements Serializable {
     }
 
     /**
-     * Returns the value of the Count property for this object.
+     * Number of datasets returned.
      *
-     * @return The value of the Count property for this object.
+     * @return Number of datasets returned.
      */
     public Integer getCount() {
         return count;
     }
     
     /**
-     * Sets the value of the Count property for this object.
+     * Number of datasets returned.
      *
-     * @param count The new value for the Count property for this object.
+     * @param count Number of datasets returned.
      */
     public void setCount(Integer count) {
         this.count = count;
     }
     
     /**
-     * Sets the value of the Count property for this object.
+     * Number of datasets returned.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param count The new value for the Count property for this object.
+     * @param count Number of datasets returned.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -129,29 +140,29 @@ public class ListDatasetsResult implements Serializable {
     }
 
     /**
-     * Returns the value of the NextToken property for this object.
+     * A pagination token for obtaining the next page of results.
      *
-     * @return The value of the NextToken property for this object.
+     * @return A pagination token for obtaining the next page of results.
      */
     public String getNextToken() {
         return nextToken;
     }
     
     /**
-     * Sets the value of the NextToken property for this object.
+     * A pagination token for obtaining the next page of results.
      *
-     * @param nextToken The new value for the NextToken property for this object.
+     * @param nextToken A pagination token for obtaining the next page of results.
      */
     public void setNextToken(String nextToken) {
         this.nextToken = nextToken;
     }
     
     /**
-     * Sets the value of the NextToken property for this object.
+     * A pagination token for obtaining the next page of results.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param nextToken The new value for the NextToken property for this object.
+     * @param nextToken A pagination token for obtaining the next page of results.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.

@@ -17,52 +17,101 @@ package com.amazonaws.services.cognitosync.model;
 import java.io.Serializable;
 
 /**
- * Dataset
+ * <p>
+ * A collection of data for an identity pool. An identity pool can have
+ * multiple datasets. A dataset is per identity and can be general or
+ * associated with a particular entity in an application (like a saved
+ * game). Datasets are automatically created if they don't exist. Data is
+ * synced by dataset, and a dataset can hold up to 1MB of key-value
+ * pairs.
+ * </p>
  */
 public class Dataset implements Serializable {
 
+    /**
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>1 - 50<br/>
+     * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
+     */
     private String identityId;
 
+    /**
+     * A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     * 0-9, '_' (underscore), '-' (dash), and '.' (dot).
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>1 - 128<br/>
+     * <b>Pattern: </b>[a-zA-Z0-9_.:-]+<br/>
+     */
     private String datasetName;
 
+    /**
+     * Date on which the dataset was created.
+     */
     private java.util.Date creationDate;
 
+    /**
+     * Date when the dataset was last modified.
+     */
     private java.util.Date lastModifiedDate;
 
+    /**
+     * The device that made the last change to this dataset.
+     */
     private String lastModifiedBy;
 
+    /**
+     * Total size in bytes of the records in this dataset.
+     */
     private Long dataStorage;
 
+    /**
+     * Number of records in this dataset.
+     */
     private Long numRecords;
 
     /**
-     * Returns the value of the IdentityId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @return The value of the IdentityId property for this object.
+     * @return A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      */
     public String getIdentityId() {
         return identityId;
     }
     
     /**
-     * Sets the value of the IdentityId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityId The new value for the IdentityId property for this object.
+     * @param identityId A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      */
     public void setIdentityId(String identityId) {
         this.identityId = identityId;
     }
     
     /**
-     * Sets the value of the IdentityId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
@@ -70,7 +119,9 @@ public class Dataset implements Serializable {
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityId The new value for the IdentityId property for this object.
+     * @param identityId A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -81,33 +132,38 @@ public class Dataset implements Serializable {
     }
 
     /**
-     * Returns the value of the DatasetName property for this object.
+     * A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     * 0-9, '_' (underscore), '-' (dash), and '.' (dot).
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 128<br/>
      * <b>Pattern: </b>[a-zA-Z0-9_.:-]+<br/>
      *
-     * @return The value of the DatasetName property for this object.
+     * @return A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     *         0-9, '_' (underscore), '-' (dash), and '.' (dot).
      */
     public String getDatasetName() {
         return datasetName;
     }
     
     /**
-     * Sets the value of the DatasetName property for this object.
+     * A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     * 0-9, '_' (underscore), '-' (dash), and '.' (dot).
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 128<br/>
      * <b>Pattern: </b>[a-zA-Z0-9_.:-]+<br/>
      *
-     * @param datasetName The new value for the DatasetName property for this object.
+     * @param datasetName A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     *         0-9, '_' (underscore), '-' (dash), and '.' (dot).
      */
     public void setDatasetName(String datasetName) {
         this.datasetName = datasetName;
     }
     
     /**
-     * Sets the value of the DatasetName property for this object.
+     * A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     * 0-9, '_' (underscore), '-' (dash), and '.' (dot).
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
@@ -115,7 +171,8 @@ public class Dataset implements Serializable {
      * <b>Length: </b>1 - 128<br/>
      * <b>Pattern: </b>[a-zA-Z0-9_.:-]+<br/>
      *
-     * @param datasetName The new value for the DatasetName property for this object.
+     * @param datasetName A string of up to 128 characters. Allowed characters are a-z, A-Z,
+     *         0-9, '_' (underscore), '-' (dash), and '.' (dot).
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -126,29 +183,29 @@ public class Dataset implements Serializable {
     }
 
     /**
-     * Returns the value of the CreationDate property for this object.
+     * Date on which the dataset was created.
      *
-     * @return The value of the CreationDate property for this object.
+     * @return Date on which the dataset was created.
      */
     public java.util.Date getCreationDate() {
         return creationDate;
     }
     
     /**
-     * Sets the value of the CreationDate property for this object.
+     * Date on which the dataset was created.
      *
-     * @param creationDate The new value for the CreationDate property for this object.
+     * @param creationDate Date on which the dataset was created.
      */
     public void setCreationDate(java.util.Date creationDate) {
         this.creationDate = creationDate;
     }
     
     /**
-     * Sets the value of the CreationDate property for this object.
+     * Date on which the dataset was created.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param creationDate The new value for the CreationDate property for this object.
+     * @param creationDate Date on which the dataset was created.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -159,29 +216,29 @@ public class Dataset implements Serializable {
     }
 
     /**
-     * Returns the value of the LastModifiedDate property for this object.
+     * Date when the dataset was last modified.
      *
-     * @return The value of the LastModifiedDate property for this object.
+     * @return Date when the dataset was last modified.
      */
     public java.util.Date getLastModifiedDate() {
         return lastModifiedDate;
     }
     
     /**
-     * Sets the value of the LastModifiedDate property for this object.
+     * Date when the dataset was last modified.
      *
-     * @param lastModifiedDate The new value for the LastModifiedDate property for this object.
+     * @param lastModifiedDate Date when the dataset was last modified.
      */
     public void setLastModifiedDate(java.util.Date lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
     
     /**
-     * Sets the value of the LastModifiedDate property for this object.
+     * Date when the dataset was last modified.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param lastModifiedDate The new value for the LastModifiedDate property for this object.
+     * @param lastModifiedDate Date when the dataset was last modified.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -192,29 +249,29 @@ public class Dataset implements Serializable {
     }
 
     /**
-     * Returns the value of the LastModifiedBy property for this object.
+     * The device that made the last change to this dataset.
      *
-     * @return The value of the LastModifiedBy property for this object.
+     * @return The device that made the last change to this dataset.
      */
     public String getLastModifiedBy() {
         return lastModifiedBy;
     }
     
     /**
-     * Sets the value of the LastModifiedBy property for this object.
+     * The device that made the last change to this dataset.
      *
-     * @param lastModifiedBy The new value for the LastModifiedBy property for this object.
+     * @param lastModifiedBy The device that made the last change to this dataset.
      */
     public void setLastModifiedBy(String lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }
     
     /**
-     * Sets the value of the LastModifiedBy property for this object.
+     * The device that made the last change to this dataset.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param lastModifiedBy The new value for the LastModifiedBy property for this object.
+     * @param lastModifiedBy The device that made the last change to this dataset.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -225,29 +282,29 @@ public class Dataset implements Serializable {
     }
 
     /**
-     * Returns the value of the DataStorage property for this object.
+     * Total size in bytes of the records in this dataset.
      *
-     * @return The value of the DataStorage property for this object.
+     * @return Total size in bytes of the records in this dataset.
      */
     public Long getDataStorage() {
         return dataStorage;
     }
     
     /**
-     * Sets the value of the DataStorage property for this object.
+     * Total size in bytes of the records in this dataset.
      *
-     * @param dataStorage The new value for the DataStorage property for this object.
+     * @param dataStorage Total size in bytes of the records in this dataset.
      */
     public void setDataStorage(Long dataStorage) {
         this.dataStorage = dataStorage;
     }
     
     /**
-     * Sets the value of the DataStorage property for this object.
+     * Total size in bytes of the records in this dataset.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param dataStorage The new value for the DataStorage property for this object.
+     * @param dataStorage Total size in bytes of the records in this dataset.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -258,29 +315,29 @@ public class Dataset implements Serializable {
     }
 
     /**
-     * Returns the value of the NumRecords property for this object.
+     * Number of records in this dataset.
      *
-     * @return The value of the NumRecords property for this object.
+     * @return Number of records in this dataset.
      */
     public Long getNumRecords() {
         return numRecords;
     }
     
     /**
-     * Sets the value of the NumRecords property for this object.
+     * Number of records in this dataset.
      *
-     * @param numRecords The new value for the NumRecords property for this object.
+     * @param numRecords Number of records in this dataset.
      */
     public void setNumRecords(Long numRecords) {
         this.numRecords = numRecords;
     }
     
     /**
-     * Sets the value of the NumRecords property for this object.
+     * Number of records in this dataset.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param numRecords The new value for the NumRecords property for this object.
+     * @param numRecords Number of records in this dataset.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.

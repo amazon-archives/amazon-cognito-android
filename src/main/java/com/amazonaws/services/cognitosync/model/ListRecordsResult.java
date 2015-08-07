@@ -17,32 +17,61 @@ package com.amazonaws.services.cognitosync.model;
 import java.io.Serializable;
 
 /**
- * List Records Result
+ * <p>
+ * Returned for a successful ListRecordsRequest.
+ * </p>
  */
 public class ListRecordsResult implements Serializable {
 
+    /**
+     * A list of all records.
+     */
     private com.amazonaws.internal.ListWithAutoConstructFlag<Record> records;
 
+    /**
+     * A pagination token for obtaining the next page of results.
+     */
     private String nextToken;
 
+    /**
+     * Total number of records.
+     */
     private Integer count;
 
+    /**
+     * Server sync count for this dataset.
+     */
     private Long datasetSyncCount;
 
+    /**
+     * The user/device that made the last change to this record.
+     */
     private String lastModifiedBy;
 
+    /**
+     * Names of merged datasets.
+     */
     private com.amazonaws.internal.ListWithAutoConstructFlag<String> mergedDatasetNames;
 
+    /**
+     * Indicates whether the dataset exists.
+     */
     private Boolean datasetExists;
 
+    /**
+     * A boolean value specifying whether to delete the dataset locally.
+     */
     private Boolean datasetDeletedAfterRequestedSyncCount;
 
+    /**
+     * A token containing a session ID, identity ID, and expiration.
+     */
     private String syncSessionToken;
 
     /**
-     * Returns the value of the Records property for this object.
+     * A list of all records.
      *
-     * @return The value of the Records property for this object.
+     * @return A list of all records.
      */
     public java.util.List<Record> getRecords() {
         if (records == null) {
@@ -53,9 +82,9 @@ public class ListRecordsResult implements Serializable {
     }
     
     /**
-     * Sets the value of the Records property for this object.
+     * A list of all records.
      *
-     * @param records The new value for the Records property for this object.
+     * @param records A list of all records.
      */
     public void setRecords(java.util.Collection<Record> records) {
         if (records == null) {
@@ -68,11 +97,11 @@ public class ListRecordsResult implements Serializable {
     }
     
     /**
-     * Sets the value of the Records property for this object.
+     * A list of all records.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param records The new value for the Records property for this object.
+     * @param records A list of all records.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -86,11 +115,11 @@ public class ListRecordsResult implements Serializable {
     }
     
     /**
-     * Sets the value of the Records property for this object.
+     * A list of all records.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param records The new value for the Records property for this object.
+     * @param records A list of all records.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -108,29 +137,29 @@ public class ListRecordsResult implements Serializable {
     }
 
     /**
-     * Returns the value of the NextToken property for this object.
+     * A pagination token for obtaining the next page of results.
      *
-     * @return The value of the NextToken property for this object.
+     * @return A pagination token for obtaining the next page of results.
      */
     public String getNextToken() {
         return nextToken;
     }
     
     /**
-     * Sets the value of the NextToken property for this object.
+     * A pagination token for obtaining the next page of results.
      *
-     * @param nextToken The new value for the NextToken property for this object.
+     * @param nextToken A pagination token for obtaining the next page of results.
      */
     public void setNextToken(String nextToken) {
         this.nextToken = nextToken;
     }
     
     /**
-     * Sets the value of the NextToken property for this object.
+     * A pagination token for obtaining the next page of results.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param nextToken The new value for the NextToken property for this object.
+     * @param nextToken A pagination token for obtaining the next page of results.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -141,29 +170,29 @@ public class ListRecordsResult implements Serializable {
     }
 
     /**
-     * Returns the value of the Count property for this object.
+     * Total number of records.
      *
-     * @return The value of the Count property for this object.
+     * @return Total number of records.
      */
     public Integer getCount() {
         return count;
     }
     
     /**
-     * Sets the value of the Count property for this object.
+     * Total number of records.
      *
-     * @param count The new value for the Count property for this object.
+     * @param count Total number of records.
      */
     public void setCount(Integer count) {
         this.count = count;
     }
     
     /**
-     * Sets the value of the Count property for this object.
+     * Total number of records.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param count The new value for the Count property for this object.
+     * @param count Total number of records.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -174,29 +203,29 @@ public class ListRecordsResult implements Serializable {
     }
 
     /**
-     * Returns the value of the DatasetSyncCount property for this object.
+     * Server sync count for this dataset.
      *
-     * @return The value of the DatasetSyncCount property for this object.
+     * @return Server sync count for this dataset.
      */
     public Long getDatasetSyncCount() {
         return datasetSyncCount;
     }
     
     /**
-     * Sets the value of the DatasetSyncCount property for this object.
+     * Server sync count for this dataset.
      *
-     * @param datasetSyncCount The new value for the DatasetSyncCount property for this object.
+     * @param datasetSyncCount Server sync count for this dataset.
      */
     public void setDatasetSyncCount(Long datasetSyncCount) {
         this.datasetSyncCount = datasetSyncCount;
     }
     
     /**
-     * Sets the value of the DatasetSyncCount property for this object.
+     * Server sync count for this dataset.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param datasetSyncCount The new value for the DatasetSyncCount property for this object.
+     * @param datasetSyncCount Server sync count for this dataset.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -207,29 +236,29 @@ public class ListRecordsResult implements Serializable {
     }
 
     /**
-     * Returns the value of the LastModifiedBy property for this object.
+     * The user/device that made the last change to this record.
      *
-     * @return The value of the LastModifiedBy property for this object.
+     * @return The user/device that made the last change to this record.
      */
     public String getLastModifiedBy() {
         return lastModifiedBy;
     }
     
     /**
-     * Sets the value of the LastModifiedBy property for this object.
+     * The user/device that made the last change to this record.
      *
-     * @param lastModifiedBy The new value for the LastModifiedBy property for this object.
+     * @param lastModifiedBy The user/device that made the last change to this record.
      */
     public void setLastModifiedBy(String lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }
     
     /**
-     * Sets the value of the LastModifiedBy property for this object.
+     * The user/device that made the last change to this record.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param lastModifiedBy The new value for the LastModifiedBy property for this object.
+     * @param lastModifiedBy The user/device that made the last change to this record.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -240,9 +269,9 @@ public class ListRecordsResult implements Serializable {
     }
 
     /**
-     * Returns the value of the MergedDatasetNames property for this object.
+     * Names of merged datasets.
      *
-     * @return The value of the MergedDatasetNames property for this object.
+     * @return Names of merged datasets.
      */
     public java.util.List<String> getMergedDatasetNames() {
         if (mergedDatasetNames == null) {
@@ -253,9 +282,9 @@ public class ListRecordsResult implements Serializable {
     }
     
     /**
-     * Sets the value of the MergedDatasetNames property for this object.
+     * Names of merged datasets.
      *
-     * @param mergedDatasetNames The new value for the MergedDatasetNames property for this object.
+     * @param mergedDatasetNames Names of merged datasets.
      */
     public void setMergedDatasetNames(java.util.Collection<String> mergedDatasetNames) {
         if (mergedDatasetNames == null) {
@@ -268,11 +297,11 @@ public class ListRecordsResult implements Serializable {
     }
     
     /**
-     * Sets the value of the MergedDatasetNames property for this object.
+     * Names of merged datasets.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param mergedDatasetNames The new value for the MergedDatasetNames property for this object.
+     * @param mergedDatasetNames Names of merged datasets.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -286,11 +315,11 @@ public class ListRecordsResult implements Serializable {
     }
     
     /**
-     * Sets the value of the MergedDatasetNames property for this object.
+     * Names of merged datasets.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param mergedDatasetNames The new value for the MergedDatasetNames property for this object.
+     * @param mergedDatasetNames Names of merged datasets.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -308,29 +337,29 @@ public class ListRecordsResult implements Serializable {
     }
 
     /**
-     * Returns the value of the DatasetExists property for this object.
+     * Indicates whether the dataset exists.
      *
-     * @return The value of the DatasetExists property for this object.
+     * @return Indicates whether the dataset exists.
      */
     public Boolean isDatasetExists() {
         return datasetExists;
     }
     
     /**
-     * Sets the value of the DatasetExists property for this object.
+     * Indicates whether the dataset exists.
      *
-     * @param datasetExists The new value for the DatasetExists property for this object.
+     * @param datasetExists Indicates whether the dataset exists.
      */
     public void setDatasetExists(Boolean datasetExists) {
         this.datasetExists = datasetExists;
     }
     
     /**
-     * Sets the value of the DatasetExists property for this object.
+     * Indicates whether the dataset exists.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param datasetExists The new value for the DatasetExists property for this object.
+     * @param datasetExists Indicates whether the dataset exists.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -341,44 +370,38 @@ public class ListRecordsResult implements Serializable {
     }
 
     /**
-     * Returns the value of the DatasetExists property for this object.
+     * Indicates whether the dataset exists.
      *
-     * @return The value of the DatasetExists property for this object.
+     * @return Indicates whether the dataset exists.
      */
     public Boolean getDatasetExists() {
         return datasetExists;
     }
 
     /**
-     * Returns the value of the DatasetDeletedAfterRequestedSyncCount
-     * property for this object.
+     * A boolean value specifying whether to delete the dataset locally.
      *
-     * @return The value of the DatasetDeletedAfterRequestedSyncCount property for
-     *         this object.
+     * @return A boolean value specifying whether to delete the dataset locally.
      */
     public Boolean isDatasetDeletedAfterRequestedSyncCount() {
         return datasetDeletedAfterRequestedSyncCount;
     }
     
     /**
-     * Sets the value of the DatasetDeletedAfterRequestedSyncCount property
-     * for this object.
+     * A boolean value specifying whether to delete the dataset locally.
      *
-     * @param datasetDeletedAfterRequestedSyncCount The new value for the DatasetDeletedAfterRequestedSyncCount property
-     *         for this object.
+     * @param datasetDeletedAfterRequestedSyncCount A boolean value specifying whether to delete the dataset locally.
      */
     public void setDatasetDeletedAfterRequestedSyncCount(Boolean datasetDeletedAfterRequestedSyncCount) {
         this.datasetDeletedAfterRequestedSyncCount = datasetDeletedAfterRequestedSyncCount;
     }
     
     /**
-     * Sets the value of the DatasetDeletedAfterRequestedSyncCount property
-     * for this object.
+     * A boolean value specifying whether to delete the dataset locally.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param datasetDeletedAfterRequestedSyncCount The new value for the DatasetDeletedAfterRequestedSyncCount property
-     *         for this object.
+     * @param datasetDeletedAfterRequestedSyncCount A boolean value specifying whether to delete the dataset locally.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -389,40 +412,38 @@ public class ListRecordsResult implements Serializable {
     }
 
     /**
-     * Returns the value of the DatasetDeletedAfterRequestedSyncCount
-     * property for this object.
+     * A boolean value specifying whether to delete the dataset locally.
      *
-     * @return The value of the DatasetDeletedAfterRequestedSyncCount property for
-     *         this object.
+     * @return A boolean value specifying whether to delete the dataset locally.
      */
     public Boolean getDatasetDeletedAfterRequestedSyncCount() {
         return datasetDeletedAfterRequestedSyncCount;
     }
 
     /**
-     * Returns the value of the SyncSessionToken property for this object.
+     * A token containing a session ID, identity ID, and expiration.
      *
-     * @return The value of the SyncSessionToken property for this object.
+     * @return A token containing a session ID, identity ID, and expiration.
      */
     public String getSyncSessionToken() {
         return syncSessionToken;
     }
     
     /**
-     * Sets the value of the SyncSessionToken property for this object.
+     * A token containing a session ID, identity ID, and expiration.
      *
-     * @param syncSessionToken The new value for the SyncSessionToken property for this object.
+     * @param syncSessionToken A token containing a session ID, identity ID, and expiration.
      */
     public void setSyncSessionToken(String syncSessionToken) {
         this.syncSessionToken = syncSessionToken;
     }
     
     /**
-     * Sets the value of the SyncSessionToken property for this object.
+     * A token containing a session ID, identity ID, and expiration.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param syncSessionToken The new value for the SyncSessionToken property for this object.
+     * @param syncSessionToken A token containing a session ID, identity ID, and expiration.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.

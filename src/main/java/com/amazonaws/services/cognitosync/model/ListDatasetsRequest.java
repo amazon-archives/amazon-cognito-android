@@ -20,48 +20,95 @@ import com.amazonaws.AmazonWebServiceRequest;
 
 /**
  * Container for the parameters to the {@link com.amazonaws.services.cognitosync.AmazonCognitoSync#listDatasets(ListDatasetsRequest) ListDatasets operation}.
- * 
+ * <p>
+ * Lists datasets for an identity. With Amazon Cognito Sync, each
+ * identity has access only to its own data. Thus, the credentials used
+ * to make this API call need to have access to the identity data.
+ * </p>
+ * <p>
+ * ListDatasets can be called with temporary user credentials provided by
+ * Cognito Identity or with developer credentials. You should use the
+ * Cognito Identity credentials to make this API call.
+ * </p>
  *
  * @see com.amazonaws.services.cognitosync.AmazonCognitoSync#listDatasets(ListDatasetsRequest)
  */
 public class ListDatasetsRequest extends AmazonWebServiceRequest implements Serializable {
 
+    /**
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>1 - 50<br/>
+     * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
+     */
     private String identityPoolId;
 
+    /**
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>1 - 50<br/>
+     * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
+     */
     private String identityId;
 
+    /**
+     * A pagination token for obtaining the next page of results.
+     */
     private String nextToken;
 
+    /**
+     * The maximum number of results to be returned.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>0 - 19<br/>
+     * <b>Pattern: </b>\d+<br/>
+     */
     private String maxResults;
 
     /**
-     * Returns the value of the IdentityPoolId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @return The value of the IdentityPoolId property for this object.
+     * @return A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      */
     public String getIdentityPoolId() {
         return identityPoolId;
     }
     
     /**
-     * Sets the value of the IdentityPoolId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityPoolId The new value for the IdentityPoolId property for this object.
+     * @param identityPoolId A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      */
     public void setIdentityPoolId(String identityPoolId) {
         this.identityPoolId = identityPoolId;
     }
     
     /**
-     * Sets the value of the IdentityPoolId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
@@ -69,7 +116,9 @@ public class ListDatasetsRequest extends AmazonWebServiceRequest implements Seri
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityPoolId The new value for the IdentityPoolId property for this object.
+     * @param identityPoolId A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -80,33 +129,43 @@ public class ListDatasetsRequest extends AmazonWebServiceRequest implements Seri
     }
 
     /**
-     * Returns the value of the IdentityId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @return The value of the IdentityId property for this object.
+     * @return A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      */
     public String getIdentityId() {
         return identityId;
     }
     
     /**
-     * Sets the value of the IdentityId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityId The new value for the IdentityId property for this object.
+     * @param identityId A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      */
     public void setIdentityId(String identityId) {
         this.identityId = identityId;
     }
     
     /**
-     * Sets the value of the IdentityId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. GUID generation is unique within a region.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
@@ -114,7 +173,9 @@ public class ListDatasetsRequest extends AmazonWebServiceRequest implements Seri
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityId The new value for the IdentityId property for this object.
+     * @param identityId A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. GUID generation is unique within a region.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -125,29 +186,29 @@ public class ListDatasetsRequest extends AmazonWebServiceRequest implements Seri
     }
 
     /**
-     * Returns the value of the NextToken property for this object.
+     * A pagination token for obtaining the next page of results.
      *
-     * @return The value of the NextToken property for this object.
+     * @return A pagination token for obtaining the next page of results.
      */
     public String getNextToken() {
         return nextToken;
     }
     
     /**
-     * Sets the value of the NextToken property for this object.
+     * A pagination token for obtaining the next page of results.
      *
-     * @param nextToken The new value for the NextToken property for this object.
+     * @param nextToken A pagination token for obtaining the next page of results.
      */
     public void setNextToken(String nextToken) {
         this.nextToken = nextToken;
     }
     
     /**
-     * Sets the value of the NextToken property for this object.
+     * A pagination token for obtaining the next page of results.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param nextToken The new value for the NextToken property for this object.
+     * @param nextToken A pagination token for obtaining the next page of results.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -158,33 +219,33 @@ public class ListDatasetsRequest extends AmazonWebServiceRequest implements Seri
     }
 
     /**
-     * Returns the value of the MaxResults property for this object.
+     * The maximum number of results to be returned.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>0 - 19<br/>
      * <b>Pattern: </b>\d+<br/>
      *
-     * @return The value of the MaxResults property for this object.
+     * @return The maximum number of results to be returned.
      */
     public String getMaxResults() {
         return maxResults;
     }
     
     /**
-     * Sets the value of the MaxResults property for this object.
+     * The maximum number of results to be returned.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>0 - 19<br/>
      * <b>Pattern: </b>\d+<br/>
      *
-     * @param maxResults The new value for the MaxResults property for this object.
+     * @param maxResults The maximum number of results to be returned.
      */
     public void setMaxResults(String maxResults) {
         this.maxResults = maxResults;
     }
     
     /**
-     * Sets the value of the MaxResults property for this object.
+     * The maximum number of results to be returned.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
@@ -192,7 +253,7 @@ public class ListDatasetsRequest extends AmazonWebServiceRequest implements Seri
      * <b>Length: </b>0 - 19<br/>
      * <b>Pattern: </b>\d+<br/>
      *
-     * @param maxResults The new value for the MaxResults property for this object.
+     * @param maxResults The maximum number of results to be returned.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.

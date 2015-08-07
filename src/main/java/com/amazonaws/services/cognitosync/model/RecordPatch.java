@@ -17,27 +17,53 @@ package com.amazonaws.services.cognitosync.model;
 import java.io.Serializable;
 
 /**
- * Record Patch
+ * <p>
+ * An update operation for a record.
+ * </p>
  */
 public class RecordPatch implements Serializable {
 
+    /**
+     * An operation, either replace or remove.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Allowed Values: </b>replace, remove
+     */
     private String op;
 
+    /**
+     * The key associated with the record patch.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>1 - 1024<br/>
+     */
     private String key;
 
+    /**
+     * The value associated with the record patch.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>0 - 1048575<br/>
+     */
     private String value;
 
+    /**
+     * Last known server sync count for this record. Set to 0 if unknown.
+     */
     private Long syncCount;
 
+    /**
+     * The last modified date of the client device.
+     */
     private java.util.Date deviceLastModifiedDate;
 
     /**
-     * Returns the value of the Op property for this object.
+     * An operation, either replace or remove.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Allowed Values: </b>replace, remove
      *
-     * @return The value of the Op property for this object.
+     * @return An operation, either replace or remove.
      *
      * @see Operation
      */
@@ -46,12 +72,12 @@ public class RecordPatch implements Serializable {
     }
     
     /**
-     * Sets the value of the Op property for this object.
+     * An operation, either replace or remove.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Allowed Values: </b>replace, remove
      *
-     * @param op The new value for the Op property for this object.
+     * @param op An operation, either replace or remove.
      *
      * @see Operation
      */
@@ -60,14 +86,14 @@ public class RecordPatch implements Serializable {
     }
     
     /**
-     * Sets the value of the Op property for this object.
+     * An operation, either replace or remove.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Allowed Values: </b>replace, remove
      *
-     * @param op The new value for the Op property for this object.
+     * @param op An operation, either replace or remove.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -80,12 +106,12 @@ public class RecordPatch implements Serializable {
     }
 
     /**
-     * Sets the value of the Op property for this object.
+     * An operation, either replace or remove.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Allowed Values: </b>replace, remove
      *
-     * @param op The new value for the Op property for this object.
+     * @param op An operation, either replace or remove.
      *
      * @see Operation
      */
@@ -94,14 +120,14 @@ public class RecordPatch implements Serializable {
     }
     
     /**
-     * Sets the value of the Op property for this object.
+     * An operation, either replace or remove.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Allowed Values: </b>replace, remove
      *
-     * @param op The new value for the Op property for this object.
+     * @param op An operation, either replace or remove.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -114,38 +140,38 @@ public class RecordPatch implements Serializable {
     }
 
     /**
-     * Returns the value of the Key property for this object.
+     * The key associated with the record patch.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 1024<br/>
      *
-     * @return The value of the Key property for this object.
+     * @return The key associated with the record patch.
      */
     public String getKey() {
         return key;
     }
     
     /**
-     * Sets the value of the Key property for this object.
+     * The key associated with the record patch.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 1024<br/>
      *
-     * @param key The new value for the Key property for this object.
+     * @param key The key associated with the record patch.
      */
     public void setKey(String key) {
         this.key = key;
     }
     
     /**
-     * Sets the value of the Key property for this object.
+     * The key associated with the record patch.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 1024<br/>
      *
-     * @param key The new value for the Key property for this object.
+     * @param key The key associated with the record patch.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -156,38 +182,38 @@ public class RecordPatch implements Serializable {
     }
 
     /**
-     * Returns the value of the Value property for this object.
+     * The value associated with the record patch.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>0 - 1048575<br/>
      *
-     * @return The value of the Value property for this object.
+     * @return The value associated with the record patch.
      */
     public String getValue() {
         return value;
     }
     
     /**
-     * Sets the value of the Value property for this object.
+     * The value associated with the record patch.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>0 - 1048575<br/>
      *
-     * @param value The new value for the Value property for this object.
+     * @param value The value associated with the record patch.
      */
     public void setValue(String value) {
         this.value = value;
     }
     
     /**
-     * Sets the value of the Value property for this object.
+     * The value associated with the record patch.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>0 - 1048575<br/>
      *
-     * @param value The new value for the Value property for this object.
+     * @param value The value associated with the record patch.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -198,29 +224,29 @@ public class RecordPatch implements Serializable {
     }
 
     /**
-     * Returns the value of the SyncCount property for this object.
+     * Last known server sync count for this record. Set to 0 if unknown.
      *
-     * @return The value of the SyncCount property for this object.
+     * @return Last known server sync count for this record. Set to 0 if unknown.
      */
     public Long getSyncCount() {
         return syncCount;
     }
     
     /**
-     * Sets the value of the SyncCount property for this object.
+     * Last known server sync count for this record. Set to 0 if unknown.
      *
-     * @param syncCount The new value for the SyncCount property for this object.
+     * @param syncCount Last known server sync count for this record. Set to 0 if unknown.
      */
     public void setSyncCount(Long syncCount) {
         this.syncCount = syncCount;
     }
     
     /**
-     * Sets the value of the SyncCount property for this object.
+     * Last known server sync count for this record. Set to 0 if unknown.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param syncCount The new value for the SyncCount property for this object.
+     * @param syncCount Last known server sync count for this record. Set to 0 if unknown.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -231,30 +257,29 @@ public class RecordPatch implements Serializable {
     }
 
     /**
-     * Returns the value of the DeviceLastModifiedDate property for this
-     * object.
+     * The last modified date of the client device.
      *
-     * @return The value of the DeviceLastModifiedDate property for this object.
+     * @return The last modified date of the client device.
      */
     public java.util.Date getDeviceLastModifiedDate() {
         return deviceLastModifiedDate;
     }
     
     /**
-     * Sets the value of the DeviceLastModifiedDate property for this object.
+     * The last modified date of the client device.
      *
-     * @param deviceLastModifiedDate The new value for the DeviceLastModifiedDate property for this object.
+     * @param deviceLastModifiedDate The last modified date of the client device.
      */
     public void setDeviceLastModifiedDate(java.util.Date deviceLastModifiedDate) {
         this.deviceLastModifiedDate = deviceLastModifiedDate;
     }
     
     /**
-     * Sets the value of the DeviceLastModifiedDate property for this object.
+     * The last modified date of the client device.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param deviceLastModifiedDate The new value for the DeviceLastModifiedDate property for this object.
+     * @param deviceLastModifiedDate The last modified date of the client device.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.

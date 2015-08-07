@@ -17,45 +17,53 @@ package com.amazonaws.services.cognitosync.model;
 import java.io.Serializable;
 
 /**
- * Register Device Result
+ * <p>
+ * Response to a RegisterDevice request.
+ * </p>
  */
 public class RegisterDeviceResult implements Serializable {
 
+    /**
+     * The unique ID generated for this device by Cognito.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>1 - 256<br/>
+     */
     private String deviceId;
 
     /**
-     * Returns the value of the DeviceId property for this object.
+     * The unique ID generated for this device by Cognito.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 256<br/>
      *
-     * @return The value of the DeviceId property for this object.
+     * @return The unique ID generated for this device by Cognito.
      */
     public String getDeviceId() {
         return deviceId;
     }
     
     /**
-     * Sets the value of the DeviceId property for this object.
+     * The unique ID generated for this device by Cognito.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 256<br/>
      *
-     * @param deviceId The new value for the DeviceId property for this object.
+     * @param deviceId The unique ID generated for this device by Cognito.
      */
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
     }
     
     /**
-     * Sets the value of the DeviceId property for this object.
+     * The unique ID generated for this device by Cognito.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 256<br/>
      *
-     * @param deviceId The new value for the DeviceId property for this object.
+     * @param deviceId The unique ID generated for this device by Cognito.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.

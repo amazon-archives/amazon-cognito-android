@@ -17,7 +17,10 @@ package com.amazonaws.services.cognitosync.model;
 import com.amazonaws.AmazonServiceException;
 
 /**
- * AmazonCognitoSync exception
+ * <p>
+ * Thrown when the limit on the number of objects or operations has been
+ * exceeded.
+ * </p>
  */        
 public class LimitExceededException extends AmazonServiceException {
     private static final long serialVersionUID = 1L;

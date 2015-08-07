@@ -20,48 +20,94 @@ import com.amazonaws.AmazonWebServiceRequest;
 
 /**
  * Container for the parameters to the {@link com.amazonaws.services.cognitosync.AmazonCognitoSync#subscribeToDataset(SubscribeToDatasetRequest) SubscribeToDataset operation}.
- * 
+ * <p>
+ * Subscribes to receive notifications when a dataset is modified by
+ * another device.
+ * </p>
+ * <p>
+ * This API can only be called with temporary credentials provided by
+ * Cognito Identity. You cannot call this API with developer credentials.
+ * </p>
  *
  * @see com.amazonaws.services.cognitosync.AmazonCognitoSync#subscribeToDataset(SubscribeToDatasetRequest)
  */
 public class SubscribeToDatasetRequest extends AmazonWebServiceRequest implements Serializable {
 
+    /**
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. The ID of the pool to which the identity belongs.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>1 - 50<br/>
+     * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
+     */
     private String identityPoolId;
 
+    /**
+     * Unique ID for this identity.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>1 - 50<br/>
+     * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
+     */
     private String identityId;
 
+    /**
+     * The name of the dataset to subcribe to.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>1 - 128<br/>
+     * <b>Pattern: </b>[a-zA-Z0-9_.:-]+<br/>
+     */
     private String datasetName;
 
+    /**
+     * The unique ID generated for this device by Cognito.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>1 - 256<br/>
+     */
     private String deviceId;
 
     /**
-     * Returns the value of the IdentityPoolId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. The ID of the pool to which the identity belongs.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @return The value of the IdentityPoolId property for this object.
+     * @return A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. The ID of the pool to which the identity belongs.
      */
     public String getIdentityPoolId() {
         return identityPoolId;
     }
     
     /**
-     * Sets the value of the IdentityPoolId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. The ID of the pool to which the identity belongs.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityPoolId The new value for the IdentityPoolId property for this object.
+     * @param identityPoolId A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. The ID of the pool to which the identity belongs.
      */
     public void setIdentityPoolId(String identityPoolId) {
         this.identityPoolId = identityPoolId;
     }
     
     /**
-     * Sets the value of the IdentityPoolId property for this object.
+     * A name-spaced GUID (for example,
+     * us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     * Cognito. The ID of the pool to which the identity belongs.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
@@ -69,7 +115,9 @@ public class SubscribeToDatasetRequest extends AmazonWebServiceRequest implement
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityPoolId The new value for the IdentityPoolId property for this object.
+     * @param identityPoolId A name-spaced GUID (for example,
+     *         us-east-1:23EC4050-6AEA-7089-A2DD-08002EXAMPLE) created by Amazon
+     *         Cognito. The ID of the pool to which the identity belongs.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -80,33 +128,33 @@ public class SubscribeToDatasetRequest extends AmazonWebServiceRequest implement
     }
 
     /**
-     * Returns the value of the IdentityId property for this object.
+     * Unique ID for this identity.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @return The value of the IdentityId property for this object.
+     * @return Unique ID for this identity.
      */
     public String getIdentityId() {
         return identityId;
     }
     
     /**
-     * Sets the value of the IdentityId property for this object.
+     * Unique ID for this identity.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityId The new value for the IdentityId property for this object.
+     * @param identityId Unique ID for this identity.
      */
     public void setIdentityId(String identityId) {
         this.identityId = identityId;
     }
     
     /**
-     * Sets the value of the IdentityId property for this object.
+     * Unique ID for this identity.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
@@ -114,7 +162,7 @@ public class SubscribeToDatasetRequest extends AmazonWebServiceRequest implement
      * <b>Length: </b>1 - 50<br/>
      * <b>Pattern: </b>[\w-]+:[0-9a-f-]+<br/>
      *
-     * @param identityId The new value for the IdentityId property for this object.
+     * @param identityId Unique ID for this identity.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -125,33 +173,33 @@ public class SubscribeToDatasetRequest extends AmazonWebServiceRequest implement
     }
 
     /**
-     * Returns the value of the DatasetName property for this object.
+     * The name of the dataset to subcribe to.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 128<br/>
      * <b>Pattern: </b>[a-zA-Z0-9_.:-]+<br/>
      *
-     * @return The value of the DatasetName property for this object.
+     * @return The name of the dataset to subcribe to.
      */
     public String getDatasetName() {
         return datasetName;
     }
     
     /**
-     * Sets the value of the DatasetName property for this object.
+     * The name of the dataset to subcribe to.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 128<br/>
      * <b>Pattern: </b>[a-zA-Z0-9_.:-]+<br/>
      *
-     * @param datasetName The new value for the DatasetName property for this object.
+     * @param datasetName The name of the dataset to subcribe to.
      */
     public void setDatasetName(String datasetName) {
         this.datasetName = datasetName;
     }
     
     /**
-     * Sets the value of the DatasetName property for this object.
+     * The name of the dataset to subcribe to.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
@@ -159,7 +207,7 @@ public class SubscribeToDatasetRequest extends AmazonWebServiceRequest implement
      * <b>Length: </b>1 - 128<br/>
      * <b>Pattern: </b>[a-zA-Z0-9_.:-]+<br/>
      *
-     * @param datasetName The new value for the DatasetName property for this object.
+     * @param datasetName The name of the dataset to subcribe to.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -170,38 +218,38 @@ public class SubscribeToDatasetRequest extends AmazonWebServiceRequest implement
     }
 
     /**
-     * Returns the value of the DeviceId property for this object.
+     * The unique ID generated for this device by Cognito.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 256<br/>
      *
-     * @return The value of the DeviceId property for this object.
+     * @return The unique ID generated for this device by Cognito.
      */
     public String getDeviceId() {
         return deviceId;
     }
     
     /**
-     * Sets the value of the DeviceId property for this object.
+     * The unique ID generated for this device by Cognito.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 256<br/>
      *
-     * @param deviceId The new value for the DeviceId property for this object.
+     * @param deviceId The unique ID generated for this device by Cognito.
      */
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
     }
     
     /**
-     * Sets the value of the DeviceId property for this object.
+     * The unique ID generated for this device by Cognito.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 256<br/>
      *
-     * @param deviceId The new value for the DeviceId property for this object.
+     * @param deviceId The unique ID generated for this device by Cognito.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.

@@ -17,7 +17,9 @@ package com.amazonaws.services.cognitosync.model;
 import com.amazonaws.AmazonServiceException;
 
 /**
- * AmazonCognitoSync exception
+ * <p>
+ * Thrown if the request is throttled.
+ * </p>
  */        
 public class TooManyRequestsException extends AmazonServiceException {
     private static final long serialVersionUID = 1L;

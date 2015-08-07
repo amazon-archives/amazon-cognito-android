@@ -17,16 +17,21 @@ package com.amazonaws.services.cognitosync.model;
 import java.io.Serializable;
 
 /**
- * Update Records Result
+ * <p>
+ * Returned for a successful UpdateRecordsRequest.
+ * </p>
  */
 public class UpdateRecordsResult implements Serializable {
 
+    /**
+     * A list of records that have been updated.
+     */
     private com.amazonaws.internal.ListWithAutoConstructFlag<Record> records;
 
     /**
-     * Returns the value of the Records property for this object.
+     * A list of records that have been updated.
      *
-     * @return The value of the Records property for this object.
+     * @return A list of records that have been updated.
      */
     public java.util.List<Record> getRecords() {
         if (records == null) {
@@ -37,9 +42,9 @@ public class UpdateRecordsResult implements Serializable {
     }
     
     /**
-     * Sets the value of the Records property for this object.
+     * A list of records that have been updated.
      *
-     * @param records The new value for the Records property for this object.
+     * @param records A list of records that have been updated.
      */
     public void setRecords(java.util.Collection<Record> records) {
         if (records == null) {
@@ -52,11 +57,11 @@ public class UpdateRecordsResult implements Serializable {
     }
     
     /**
-     * Sets the value of the Records property for this object.
+     * A list of records that have been updated.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param records The new value for the Records property for this object.
+     * @param records A list of records that have been updated.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -70,11 +75,11 @@ public class UpdateRecordsResult implements Serializable {
     }
     
     /**
-     * Sets the value of the Records property for this object.
+     * A list of records that have been updated.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param records The new value for the Records property for this object.
+     * @param records A list of records that have been updated.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.

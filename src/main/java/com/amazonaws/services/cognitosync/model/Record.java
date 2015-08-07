@@ -17,55 +17,81 @@ package com.amazonaws.services.cognitosync.model;
 import java.io.Serializable;
 
 /**
- * Record
+ * <p>
+ * The basic data structure of a dataset.
+ * </p>
  */
 public class Record implements Serializable {
 
+    /**
+     * The key for the record.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>1 - 1024<br/>
+     */
     private String key;
 
+    /**
+     * The value for the record.
+     * <p>
+     * <b>Constraints:</b><br/>
+     * <b>Length: </b>0 - 1048575<br/>
+     */
     private String value;
 
+    /**
+     * The server sync count for this record.
+     */
     private Long syncCount;
 
+    /**
+     * The date on which the record was last modified.
+     */
     private java.util.Date lastModifiedDate;
 
+    /**
+     * The user/device that made the last change to this record.
+     */
     private String lastModifiedBy;
 
+    /**
+     * The last modified date of the client device.
+     */
     private java.util.Date deviceLastModifiedDate;
 
     /**
-     * Returns the value of the Key property for this object.
+     * The key for the record.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 1024<br/>
      *
-     * @return The value of the Key property for this object.
+     * @return The key for the record.
      */
     public String getKey() {
         return key;
     }
     
     /**
-     * Sets the value of the Key property for this object.
+     * The key for the record.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 1024<br/>
      *
-     * @param key The new value for the Key property for this object.
+     * @param key The key for the record.
      */
     public void setKey(String key) {
         this.key = key;
     }
     
     /**
-     * Sets the value of the Key property for this object.
+     * The key for the record.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>1 - 1024<br/>
      *
-     * @param key The new value for the Key property for this object.
+     * @param key The key for the record.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -76,38 +102,38 @@ public class Record implements Serializable {
     }
 
     /**
-     * Returns the value of the Value property for this object.
+     * The value for the record.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>0 - 1048575<br/>
      *
-     * @return The value of the Value property for this object.
+     * @return The value for the record.
      */
     public String getValue() {
         return value;
     }
     
     /**
-     * Sets the value of the Value property for this object.
+     * The value for the record.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>0 - 1048575<br/>
      *
-     * @param value The new value for the Value property for this object.
+     * @param value The value for the record.
      */
     public void setValue(String value) {
         this.value = value;
     }
     
     /**
-     * Sets the value of the Value property for this object.
+     * The value for the record.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      * <p>
      * <b>Constraints:</b><br/>
      * <b>Length: </b>0 - 1048575<br/>
      *
-     * @param value The new value for the Value property for this object.
+     * @param value The value for the record.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -118,29 +144,29 @@ public class Record implements Serializable {
     }
 
     /**
-     * Returns the value of the SyncCount property for this object.
+     * The server sync count for this record.
      *
-     * @return The value of the SyncCount property for this object.
+     * @return The server sync count for this record.
      */
     public Long getSyncCount() {
         return syncCount;
     }
     
     /**
-     * Sets the value of the SyncCount property for this object.
+     * The server sync count for this record.
      *
-     * @param syncCount The new value for the SyncCount property for this object.
+     * @param syncCount The server sync count for this record.
      */
     public void setSyncCount(Long syncCount) {
         this.syncCount = syncCount;
     }
     
     /**
-     * Sets the value of the SyncCount property for this object.
+     * The server sync count for this record.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param syncCount The new value for the SyncCount property for this object.
+     * @param syncCount The server sync count for this record.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -151,29 +177,29 @@ public class Record implements Serializable {
     }
 
     /**
-     * Returns the value of the LastModifiedDate property for this object.
+     * The date on which the record was last modified.
      *
-     * @return The value of the LastModifiedDate property for this object.
+     * @return The date on which the record was last modified.
      */
     public java.util.Date getLastModifiedDate() {
         return lastModifiedDate;
     }
     
     /**
-     * Sets the value of the LastModifiedDate property for this object.
+     * The date on which the record was last modified.
      *
-     * @param lastModifiedDate The new value for the LastModifiedDate property for this object.
+     * @param lastModifiedDate The date on which the record was last modified.
      */
     public void setLastModifiedDate(java.util.Date lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
     
     /**
-     * Sets the value of the LastModifiedDate property for this object.
+     * The date on which the record was last modified.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param lastModifiedDate The new value for the LastModifiedDate property for this object.
+     * @param lastModifiedDate The date on which the record was last modified.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -184,29 +210,29 @@ public class Record implements Serializable {
     }
 
     /**
-     * Returns the value of the LastModifiedBy property for this object.
+     * The user/device that made the last change to this record.
      *
-     * @return The value of the LastModifiedBy property for this object.
+     * @return The user/device that made the last change to this record.
      */
     public String getLastModifiedBy() {
         return lastModifiedBy;
     }
     
     /**
-     * Sets the value of the LastModifiedBy property for this object.
+     * The user/device that made the last change to this record.
      *
-     * @param lastModifiedBy The new value for the LastModifiedBy property for this object.
+     * @param lastModifiedBy The user/device that made the last change to this record.
      */
     public void setLastModifiedBy(String lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }
     
     /**
-     * Sets the value of the LastModifiedBy property for this object.
+     * The user/device that made the last change to this record.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param lastModifiedBy The new value for the LastModifiedBy property for this object.
+     * @param lastModifiedBy The user/device that made the last change to this record.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
@@ -217,30 +243,29 @@ public class Record implements Serializable {
     }
 
     /**
-     * Returns the value of the DeviceLastModifiedDate property for this
-     * object.
+     * The last modified date of the client device.
      *
-     * @return The value of the DeviceLastModifiedDate property for this object.
+     * @return The last modified date of the client device.
      */
     public java.util.Date getDeviceLastModifiedDate() {
         return deviceLastModifiedDate;
     }
     
     /**
-     * Sets the value of the DeviceLastModifiedDate property for this object.
+     * The last modified date of the client device.
      *
-     * @param deviceLastModifiedDate The new value for the DeviceLastModifiedDate property for this object.
+     * @param deviceLastModifiedDate The last modified date of the client device.
      */
     public void setDeviceLastModifiedDate(java.util.Date deviceLastModifiedDate) {
         this.deviceLastModifiedDate = deviceLastModifiedDate;
     }
     
     /**
-     * Sets the value of the DeviceLastModifiedDate property for this object.
+     * The last modified date of the client device.
      * <p>
      * Returns a reference to this object so that method calls can be chained together.
      *
-     * @param deviceLastModifiedDate The new value for the DeviceLastModifiedDate property for this object.
+     * @param deviceLastModifiedDate The last modified date of the client device.
      *
      * @return A reference to this updated object so that method calls can be chained
      *         together.
