@@ -23,6 +23,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.amazonaws.AmazonClientException;
+import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.auth.IdentityChangedListener;
 import com.amazonaws.mobileconnectors.cognito.exceptions.DataStorageException;
@@ -49,7 +50,7 @@ import java.util.List;
  * CognitoCachingCredentialsProvider provider = new CognitoCachingCredentialsProvider(context,
  *         awsAccountId, identityPoolId, unauthRoleArn, authRoleArn, Regions.US_EAST_1);
  * CognitoClientManager client = new CognitoClientManager(context, Regions.US_EAST_1, provider);
- * 
+ *
  * Dataset dataset = client.openOrCreateDataset(&quot;default_dataset&quot;);
  * dataset.put(&quot;high_score&quot;, &quot;100&quot;);
  * dataset.synchronize(new SyncCallback() {
@@ -102,7 +103,7 @@ public class CognitoSyncManager {
 
     /**
      * Final constructor. Package private to allow dependency injection
-     * 
+     *
      * @param context
      * @param region
      * @param provider
@@ -149,7 +150,20 @@ public class CognitoSyncManager {
      */
     public CognitoSyncManager(Context context, Regions region,
             CognitoCachingCredentialsProvider provider) {
-        this(context, region, provider, new AmazonCognitoSyncClient(provider));
+        this(context, region, provider, new ClientConfiguration());
+    }
+
+    /**
+     * Constructs a CognitoSyncManager object.
+     *
+     * @param context a context of the app
+     * @param region Cognito sync region
+     * @param provider a credentials provider
+     * @param clientConfiguration client configuration for underlying AWS client
+     */
+    public CognitoSyncManager(Context context, Regions region,
+            CognitoCachingCredentialsProvider provider, ClientConfiguration clientConfiguration) {
+        this(context, region, provider, new AmazonCognitoSyncClient(provider, clientConfiguration));
     }
 
     /**
@@ -248,12 +262,12 @@ public class CognitoSyncManager {
             throw new RegistrationFailedException("Failed to register device", ace);
         }
     }
-    
+
     /**
-     * Gets the push sync device id of the device in use. This device id 
-     * is unique per identity id, and helps identify the endpoint when Cognito is sending 
+     * Gets the push sync device id of the device in use. This device id
+     * is unique per identity id, and helps identify the endpoint when Cognito is sending
      * push updates.
-     * 
+     *
      * @return the device id of the current user's device
      */
     public String getDeviceId() {
