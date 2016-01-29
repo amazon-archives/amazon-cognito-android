@@ -257,7 +257,7 @@ public interface Dataset {
          * 
          * @param dataset dataset handler
          * @param datasetNames a list of names of merged datasets'
-         * @return
+         * @return true if the merge is resolved so that synchronize will retry, false otherwise.
          */
         boolean onDatasetsMerged(Dataset dataset, List<String> datasetNames);
 
